@@ -3,20 +3,24 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_page
+from django.urls import reverse_lazy
 
 
 from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.http import HttpResponse
 
 from .models import Unit, Recipe, Ingredient, RecipesIngredient, Tag
-#from .forms import PostForm, CommentForm
+from .forms import RecipeForm
 
 
 User = get_user_model()
 
+
 class RecipeList(ListView):
     model = Recipe
-    template_name = 'index.html'
+    template_name = 'index_auth.html'
+    paginate_by = 1
 
 
 class RecipeDetail(DetailView):
@@ -30,12 +34,24 @@ class RecipeDetail(DetailView):
         ingredients = recipe.ingredients.all()
         context['ingredients'] = ingredients
         return context
-    
-def index(request):
-    user = User.objects.get(id=1)
-    ingredients = RecipesIngredient.objects.filter(recipe__author=user)
-    result = list(ingredients)
-    
-    return HttpResponse(f'{result}')
 
-    #return render(request, 'index.html', {'page': page, 'paginator': paginator})
+
+class RecipeCreate(CreateView):
+    model = Recipe
+    template_name = 'add.html'
+    form_class = RecipeForm
+        
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['tags'] = Tag.objects.all()
+        return context
+
+class RecipeUpdate(UpdateView):
+    model = Recipe
+    fields = ['name']
+
+class RecipeDelete(DeleteView):
+    model = Recipe
+    success_url = reverse_lazy('recipes')

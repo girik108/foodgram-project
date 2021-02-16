@@ -32,14 +32,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'api',
+    'prodassist',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api',
-    'prodassist',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -122,4 +123,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+
+# задаём произвольный URL, который будет использоваться для запросов к статическим файлам
+STATIC_URL = '/static/' 
+# теперь логотип можно будет запросить по адресу sitename.ex**/static/**images/logo.png
+STATICFILES_DIRS = ('data/',)
+# задаём адрес директории, куда командой *collectstatic* будет собрана вся статика
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

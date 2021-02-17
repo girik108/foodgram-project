@@ -11,10 +11,10 @@ User = get_user_model()
 class Unit(models.Model):
     """Класс Единиц измерения ингредиентов"""
     name = models.CharField(max_length=100)
-    contraction = models.CharField(max_length=50, default='.')
+    contraction = models.CharField(max_length=10, default='.')
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.contraction}.'
 
 
 class Ingredient(models.Model):
@@ -31,7 +31,6 @@ class Ingredient(models.Model):
 class Tag(models.Model):
     """Справочник тегов"""
     name = models.CharField(max_length=50, unique=True)
-
     class Meta:
         ordering = ['name']
 
@@ -40,7 +39,7 @@ class Tag(models.Model):
 
     @property
     def translit(self):
-        return slugify(self.name, separator='_')
+        return slugify(self.name, separator='__')
 
 
 class Recipe(models.Model):

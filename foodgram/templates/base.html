@@ -6,8 +6,12 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% load static %}
-    <title>{% block title %}Продуктовый помощник{% endblock %} | FoodGRAM</title>
+    <title>{% block title %}Рецепты{% endblock %}</title>
+    {% if single %}
+    <link rel="stylesheet" href="{% static 'pages/single.css' %}">
+    {% else %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+    {% endif %} 
 </head>
 <body class="body">
 {% include 'header.html' %}
@@ -16,10 +20,12 @@
     {% endblock %}
 </main>
 {% include 'footer.html' %}
-<script src="{% static 'js/config/config.js' %}"></script>
-<script src="{% static 'js/components/Header.js' %}"></script>
-<script src="{% static 'js/utils/debouncing.js' %}"></script>
-<script src="{% static 'js/api/Api.js' %}"></script>
-<script src="{% static 'formRecipe.js' %}"></script>
+
+{% if single %}
+    {% include 'scripts_detail.html' %}
+{% else %}
+    {% include 'scripts_index.html' %}
+{% endif %} 
+
 </body>
 </html>

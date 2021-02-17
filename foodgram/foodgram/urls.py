@@ -9,7 +9,7 @@ urlpatterns = [
 
 
 urlpatterns += [
-    path('recipes/', include('prodassist.urls')),
+    path('', include('recipes.urls')),
 ]
 
 if settings.DEBUG:

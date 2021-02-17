@@ -1,7 +1,7 @@
-<h1>{{ object.headline }}</h1>
-<p>{{ object.content }}</p>
-<p>Reporter: {{ object.name }}</p>
-<p>Published: {{ object.pub_date|date }}</p>
-{% for ingredient in ingredients %}
-    <li>{{ ingredient.ingredient }} - {{ ingredient.count }} - {{ ingredient.unit }}</li>
-{% endfor %}
+{% extends "base.html" %}
+{% block title %}{{ object.name|title }}{% endblock %}
+{% block content %}
+    <div class="card-list">
+    {% include "recipe_detail.html" with recipe=object %}
+    </div>
+{% endblock %}

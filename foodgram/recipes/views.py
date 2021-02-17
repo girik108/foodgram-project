@@ -20,7 +20,7 @@ User = get_user_model()
 class RecipeList(ListView):
     model = Recipe
     template_name = 'index_auth.html'
-    paginate_by = 1
+    paginate_by = 10
 
 
 class RecipeDetail(DetailView):
@@ -33,6 +33,7 @@ class RecipeDetail(DetailView):
         #ingredients = Ingredient.objects.filter(recipes__recipe=recipe)
         ingredients = recipe.ingredients.all()
         context['ingredients'] = ingredients
+        context['single'] = True
         return context
 
 

@@ -1,3 +1,4 @@
+{# this won't be rendered #}
 <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
     {% load thumbnail %}
     {% thumbnail recipe.image "960x339" crop="center" upscale=True as im %}

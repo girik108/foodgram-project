@@ -1,7 +1,0 @@
-{% extends "base.html" %}
-{% block title %}{{ object.name|title }}{% endblock %}
-{% block content %}
-    <div class="card-list">
-    {% include "recipe_detail.html" with recipe=object %}
-    </div>
-{% endblock %}

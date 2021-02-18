@@ -23,13 +23,28 @@ User = get_user_model()
 
 class RecipeList(ListView):
     model = Recipe
-    template_name = 'index.html'
-    paginate_by = 10
+    template_name = 'author/index.html'
+    paginate_by = 6
+
+
+class AuthorRecipeList(ListView):
+    model = Recipe
+    template_name = 'author/index.html'
+    paginate_by = 6
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['author'] = self.author
+        return context
+
+    def get_queryset(self):
+        self.author = get_object_or_404(User, username=self.kwargs['username'])
+        return self.author.recipes.all()
 
 
 class FavoriteRecipeList(LoginRequiredMixin, ListView):
     model = Recipe
-    template_name = 'index.html'
+    template_name = 'favorite/index.html'
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
@@ -41,9 +56,9 @@ class FavoriteRecipeList(LoginRequiredMixin, ListView):
         return Recipe.objects.filter(liked__user=self.request.user)
 
 
-class SubRecipeList(LoginRequiredMixin, ListView):
-    model = Recipe
-    template_name = 'index.html'
+class SubAuthorList(LoginRequiredMixin, ListView):
+    model = User
+    template_name = 'follow/index.html'
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
@@ -52,12 +67,13 @@ class SubRecipeList(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        return Recipe.objects.filter(author__following__user=self.request.user)
+        user = self.request.user
+        return User.objects.filter(following__user=self.request.user)
 
 
 class RecipeDetail(DetailView):
     model = Recipe
-    template_name = 'detail.html'
+    template_name = 'detail/index.html'
 
     def get_context_data(self, **kwargs):
         recipe = self.get_object()

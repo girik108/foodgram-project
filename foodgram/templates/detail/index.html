@@ -1,0 +1,12 @@
+{% extends "../base.html" %}
+{% block title %}{{ object.name|title }}{% endblock %}
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pages/single.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="card-list">
+    {% include "detail/item.html" with recipe=object %}
+    </div>
+{% endblock %}
+{% block scripts %}{% include "detail/scripts.html" %}{% endblock %}

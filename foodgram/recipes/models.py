@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+CSS_COLORS = ('purple', 'green', 'orange')
 
 User = get_user_model()
 
@@ -30,7 +31,10 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     """Справочник тегов"""
+    COLORS = [(color, color.title()) for color in CSS_COLORS]
     name = models.CharField(max_length=50, unique=True)
+    color = models.CharField(max_length=10, choices=COLORS, default='green')
+
     class Meta:
         ordering = ['name']
 

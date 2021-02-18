@@ -13,7 +13,8 @@ urlpatterns = [
     path('<str:username>/favorites/',
          views.FavoriteRecipeList.as_view(), name='favorites'),
     path('<str:username>/subscriptions/',
-         views.SubRecipeList.as_view(), name='subscription'),
+         views.SubAuthorList.as_view(), name='subscription'),
+    path('<str:username>/', views.AuthorRecipeList.as_view(), name='profile'),
     path('<str:username>/<slug:slug>/',
          views.RecipeDetail.as_view(), name='recipe_slug'),
 ]

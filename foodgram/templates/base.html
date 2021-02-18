@@ -1,3 +1,4 @@
+{# base html #}
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,11 +8,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% load static %}
     <title>{% block title %}Рецепты{% endblock %}</title>
-    {% if single %}
-    <link rel="stylesheet" href="{% static 'pages/single.css' %}">
-    {% else %}
+    {% block css %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
-    {% endif %} 
+    {% endblock %}
 </head>
 <body class="body">
 {% include 'header.html' %}
@@ -21,11 +20,9 @@
 </main>
 {% include 'footer.html' %}
 
-{% if single %}
-    {% include 'scripts_detail.html' %}
-{% else %}
-    {% include 'scripts_index.html' %}
-{% endif %} 
+{% block scripts %}
+
+{% endblock %}
 
 </body>
 </html>

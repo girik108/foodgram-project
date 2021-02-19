@@ -12,10 +12,12 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views import View
 
 
+
 from django.http import HttpResponse
 
 from .models import Unit, Recipe, Ingredient, RecipesIngredient, Tag, Follow
 from .forms import RecipeForm
+from .filters import RecipeFilter
 
 
 User = get_user_model()
@@ -23,8 +25,13 @@ User = get_user_model()
 
 class RecipeList(ListView):
     model = Recipe
-    template_name = 'author/index.html'
+    template_name = 'main/index.html'
     paginate_by = 6
+
+    def get_queryset(self):
+        qs = self.model.objects.all()
+        recipe_filtered = RecipeFilter(self.request.GET, queryset=qs)
+        return recipe_filtered.qs
 
 
 class AuthorRecipeList(ListView):
@@ -39,7 +46,9 @@ class AuthorRecipeList(ListView):
 
     def get_queryset(self):
         self.author = get_object_or_404(User, username=self.kwargs['username'])
-        return self.author.recipes.all()
+        qs = self.author.recipes.all()
+        recipe_filtered = RecipeFilter(self.request.GET, queryset=qs)
+        return recipe_filtered.qs
 
 
 class FavoriteRecipeList(LoginRequiredMixin, ListView):
@@ -117,3 +126,4 @@ class FollowUser(LoginRequiredMixin, View):
 
 class UnFollowUser(LoginRequiredMixin, View):
     pass
+

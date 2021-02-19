@@ -1,0 +1,17 @@
+{# tags list complete #}
+<ul class="tags">
+    {% for tag in tag_list %}
+    <li class="tags__item">
+        {% if forloop.first %}
+        <a id="{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }} tags__checkbox_active" href="?tag={{ tag.slug }}"></a>
+        <span class="tags__label">{{ tag.name }}</span>
+        {% elif forloop.last %}
+        <a id="{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }} tags__checkbox_active" href="?tag={{ tag.slug }}"></a>
+        <span for="{{ tag.slug }}" class="tags__label">{{ tag.name }}</span>
+        {% else %}
+        <a id="{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }} tags__checkbox_active" href="?tag={{ tag.slug }}"></a>
+        <label for="{{ tag.slug }}" class="tags__label">{{ tag.name }}</label>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>

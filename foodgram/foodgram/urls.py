@@ -9,8 +9,10 @@ urlpatterns = [
 
 
 urlpatterns += [
+    path('about/', include('about.urls', namespace='about')),
     path('', include('recipes.urls')),
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

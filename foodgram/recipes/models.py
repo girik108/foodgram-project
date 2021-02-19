@@ -1,5 +1,3 @@
-from slugify import slugify
-
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -34,9 +32,10 @@ class Tag(models.Model):
     COLORS = [(color, color.title()) for color in CSS_COLORS]
     name = models.CharField(max_length=50, unique=True)
     color = models.CharField(max_length=10, choices=COLORS, default='green')
+    slug = models.SlugField(max_length=20, default='lunch')
 
     class Meta:
-        ordering = ['name']
+        ordering = ['pk']
 
     def __str__(self):
         return f'{self.name}'

@@ -2,8 +2,8 @@
     <nav class="nav">
         <div class="nav__container container">
             <ul class="nav__items list">
-                <li class="nav__item"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
                 {% if user.is_authenticated %}
+                <li class="nav__item"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
                 <li class="nav__item{% if subs %} nav__item_active{% endif %}">
                     <a href="{% url 'subscription' user.username %}" class="nav__link link">Мои подписки</a>
                 </li>
@@ -11,17 +11,21 @@
                 <li class="nav__item{% if favorite %} nav__item_active{% endif %}">
                     <a href="{% url 'favorites' user.username %}" class="nav__link link">Избранное</a>
                 </li>
+                {% else %}
+                <li class="nav__item nav__item_active"><a href="#" class="nav__link link">Рецепты</a></li>
+                <li class="nav__item nav__item_disabled"><a href="#" class="nav__link link">Список покупок</a></li>
                 {% endif %}
                 <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a>
                     <span class="badge badge_style_blue nav__badge" id="counter"></span>
                 </li>
+
             </ul>
             <ul class="nav__items list">
                 {% if user.is_authenticated %}
                 <li class="nav__item"><a href="#" class="nav__link link">Изменить пароль</a></li>
                 <li class="nav__item"><a href="#" class="nav__link link">Выход</a></li>
                 {% else %}
-                <li class="nav__item"><a href="#" class="nav__link link">Войти</a></li>
+                <li class="nav__item"><a href="{% url 'signup' %}" class="nav__link link">Войти</a></li>
                 <li class="nav__item"><a href="#" class="button button_style_blue">Создать аккаунт</a></li>
                 {% endif %}
             </ul>

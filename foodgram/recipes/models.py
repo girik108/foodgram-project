@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+from slugify import slugify
+
 CSS_COLORS = ('purple', 'green', 'orange')
 
 User = get_user_model()
@@ -64,7 +66,7 @@ class Recipe(models.Model):
         return f'{self.name}'
 
     def get_absolute_url(self):
-        return reverse('detail-recipe-pk', kwargs={'pk': self.pk})
+        return reverse('recipe', kwargs={'pk': self.pk})
 
 
 class RecipesIngredient(models.Model):
@@ -86,12 +88,13 @@ class RecipesIngredient(models.Model):
 class ShoppingList(models.Model):
     """Класс список покупок"""
     user = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name='purchases')
+                             related_name='purchases')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                related_name='+')
 
     def __str__(self):
         return f'{self.user} -> {self.recipe}'
+
 
 class Follow(models.Model):
     """Класс подписок"""
@@ -105,9 +108,11 @@ class Follow(models.Model):
     def __str__(self):
         return f'{self.user} follow {self.author}'
 
+
 class Favorite(models.Model):
+    """Класс Избранного"""
     user = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name='favorites')
+                             related_name='favorites')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                related_name='liked')
 

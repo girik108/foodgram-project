@@ -1,6 +1,8 @@
 from django import template
 from django.template.defaultfilters import stringfilter
 
+from recipes.models import Favorite
+
 
 register = template.Library()
 
@@ -14,4 +16,9 @@ def text_split(value, sep='\n'):
 
 @register.filter 
 def addclass(field, css): 
-        return field.as_widget(attrs={"class": css}) 
+        return field.as_widget(attrs={"class": css})
+
+
+@register.filter 
+def is_favorite(recipe, user):
+    return recipe.is_favorite(user)

@@ -68,6 +68,9 @@ class Recipe(models.Model):
     def get_absolute_url(self):
         return reverse('recipe', kwargs={'pk': self.pk})
 
+    def is_favorite(self, user):
+        return self.liked.filter(user=user).exists()
+
 
 class RecipesIngredient(models.Model):
     """Класс Ингредиентов в рецептах"""

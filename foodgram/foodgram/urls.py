@@ -8,8 +8,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('users.urls')),
     path('about/', include('about.urls', namespace='about')),
+    path('api/', include('api.urls')),
     path('', include('recipes.urls')),
 ]
+
 
 
 if settings.DEBUG:

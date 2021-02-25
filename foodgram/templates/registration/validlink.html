@@ -1,0 +1,33 @@
+{% extends "../base.html" %}
+{% block title %}Введите новый пароль{% endblock %}
+{% block main_title %}Введите новый пароль{% endblock %}
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pages/form.css' %}">
+{% endblock %}
+{% block content %}
+{% load custom_filters %}
+<div class="form-container">
+    <form class="form" method="post">
+        <p class="form__info-text">Пожалуйста, введите новый пароль дважды, чтобы мы могли убедиться в правильности написания.</p>
+        {% csrf_token %}
+        {% for field in form %} 
+        <div class="form__group">
+            <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label> 
+            <div class="form__field-group"> 
+                {{ field|addclass:"form__input" }}
+                {% if form.errors and field.name == 'new_password2' %}
+                <span class="form__error">{{ form.error_messages.password_mismatch }}</span>
+                {% endif%}
+            </div>                 
+        </div> 
+        {% endfor %}
+        <div class="form__footer">
+            <button class="button button_style_blue">Изменить мой пароль</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+

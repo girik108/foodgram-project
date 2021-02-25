@@ -1,0 +1,9 @@
+{% extends "custom.html" %}
+{% block title %}Неправильная ссылка{% endblock %}
+{% block message %}
+Неправильная ссылка на сброс пароля, возможно она уже была использована<br>
+Запросите сброс пароля еще раз.
+{% endblock %}
+{% block button %}
+<button class="button button_style_blue" onclick="window.location.href = '{% url 'password_reset' %}';">Сброс пароля</button>
+{% endblock %}

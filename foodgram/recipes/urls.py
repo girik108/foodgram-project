@@ -15,6 +15,7 @@ urlpatterns = [
     path('<str:username>/subscriptions/',
          views.SubAuthorList.as_view(), name='subscription'),
     path('<str:username>/', views.AuthorRecipeList.as_view(), name='profile'),
+    path('shoplist/', views.ShopList.as_view(), name='shoplist'),
     path('<str:username>/<slug:slug>/',
          views.RecipeDetail.as_view(), name='recipe_slug'),
 ]

@@ -11,11 +11,11 @@ User = get_user_model()
 
 class Unit(models.Model):
     """Класс Единиц измерения ингредиентов"""
-    name = models.CharField(max_length=100)
-    contraction = models.CharField(max_length=10, default='.')
+    name = models.CharField(max_length=100, null=True, blank=True)
+    abbr = models.CharField(max_length=25, default='г')
 
     def __str__(self):
-        return f'{self.contraction}.'
+        return f'{self.abbr}'
 
 
 class Ingredient(models.Model):

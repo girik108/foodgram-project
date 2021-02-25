@@ -1,4 +1,14 @@
 //JS
+
+function getCookie(name) {
+
+  var matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ))
+  return matches ? decodeURIComponent(matches[1]) : undefined
+}
+
+
 class Api {
     constructor(apiUrl) {
         this.apiUrl =  apiUrl;
@@ -82,7 +92,8 @@ class Api {
     return fetch(`/api/v1/favorites/`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRFToken' : getCookie('csrftoken')
       },
       body: JSON.stringify({
         id: id
@@ -99,7 +110,8 @@ class Api {
     return fetch(`/api/v1/favorites/${id}/`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRFToken' : getCookie('csrftoken')
       }
     })
         .then( e => {

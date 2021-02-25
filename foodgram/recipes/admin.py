@@ -4,8 +4,8 @@ from .models import Unit, Recipe, Ingredient, RecipesIngredient, Tag, Follow, Fa
 
 
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name')
-    search_fields = ('name',)
+    list_display = ('pk', 'name', 'abbr')
+    search_fields = ('name', 'abbr')
     empty_value_display = '-пусто-'
 
 

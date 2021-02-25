@@ -20,5 +20,16 @@ def addclass(field, css):
 
 
 @register.filter 
+<<<<<<< HEAD
 def is_favorite(recipe, user):
     return recipe.is_favorite(user)
+=======
+def is_auth(url, auth='/auth/'): 
+        return url.startswith(auth)
+
+
+@register.filter 
+def is_index(url, index='/'): 
+        return url == index
+
+>>>>>>> c28a9acc8cf7d803dbe8ec57047ad482706e4ca0

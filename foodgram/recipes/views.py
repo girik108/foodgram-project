@@ -12,7 +12,6 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views import View
 
 
-
 from django.http import HttpResponse
 
 from .models import Unit, Recipe, Ingredient, RecipesIngredient, Tag, Follow
@@ -127,3 +126,6 @@ class FollowUser(LoginRequiredMixin, View):
 class UnFollowUser(LoginRequiredMixin, View):
     pass
 
+
+class ShopList(View):
+    pass

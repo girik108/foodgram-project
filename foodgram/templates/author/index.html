@@ -1,9 +1,19 @@
 {% extends "../base.html" %}
 {% block title %}Рецепты{% endblock %}
+{% load custom_filters %}
 {% block content %}
     <div class="main__header">
         <h1 class="main__title">{{ author.get_full_name }}</h1>
         {% include "tags.html" %}
+    </div>
+    <div class="author-subscribe" data-author="{{ author.id }}">
+        <p style="padding: 0 0 2em 0;">
+            {% if author|is_subscribe:user %}
+            <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+            {% else %}
+            <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
+            {% endif %}
+        </p>
     </div>
     <div class="card-list">
     {% for recipe in object_list %}
@@ -14,3 +24,5 @@
     {% include "paginator.html" with items=page_obj paginator=paginator %}
     {% endif %} 
 {% endblock %}
+
+{% block scripts %}{% include "author/scripts.html" %}{% endblock %}

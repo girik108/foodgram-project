@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Unit, Recipe, Ingredient, RecipesIngredient, Tag, Follow, Favorite
+from .models import Unit, Recipe, Ingredient, RecipesIngredient, Tag, Follow, Favorite, ShoppingList
 
 
 class UnitAdmin(admin.ModelAdmin):
@@ -40,6 +40,9 @@ class FollowAdmin(admin.ModelAdmin):
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user', 'recipe')
 
+class ShoppingListAdmin(admin.ModelAdmin): 
+    list_display = ('pk', 'user', 'recipe')
+
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
@@ -47,3 +50,4 @@ admin.site.register(RecipesIngredient, RecipesIngredientAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Follow, FollowAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
+admin.site.register(ShoppingList, ShoppingListAdmin)

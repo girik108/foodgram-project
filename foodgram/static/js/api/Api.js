@@ -14,9 +14,10 @@ class Api {
         this.apiUrl =  apiUrl;
     }
   getPurchases () {
-    return fetch(`/purchases`, {
+    return fetch(`/api/v1/purchases/`, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+		'X-CSRFToken' : getCookie('csrftoken')
       }
     })
       .then( e => {
@@ -27,10 +28,11 @@ class Api {
       })
   }
   addPurchases (id) {
-    return fetch(`/purchases`, {
+    return fetch(`/api/v1/purchases/`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+		'X-CSRFToken' : getCookie('csrftoken')
       },
       body: JSON.stringify({
         id: id
@@ -44,10 +46,11 @@ class Api {
       })
   }
   removePurchases (id){
-    return fetch(`/purchases/${id}`, {
+    return fetch(`/api/v1/purchases/${id}/`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+		'X-CSRFToken' : getCookie('csrftoken')
       }
     })
       .then( e => {
@@ -58,10 +61,11 @@ class Api {
       })
   }
   addSubscriptions(id) {
-    return fetch(`/subscriptions`, {
+    return fetch(`/api/v1/subscriptions/`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+		'X-CSRFToken' : getCookie('csrftoken')
       },
       body: JSON.stringify({
         id: id
@@ -75,10 +79,11 @@ class Api {
       })
   }
   removeSubscriptions (id) {
-    return fetch(`/subscriptions/${id}`, {
+    return fetch(`/subscriptions/${id}/`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+		'X-CSRFToken' : getCookie('csrftoken')
       }
     })
       .then( e => {
@@ -107,7 +112,7 @@ class Api {
         })
   }
   removeFavorites (id) {
-    return fetch(`/api/v1/favorites/${id}/`, {
+    return fetch(`/api/v1/favorites/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

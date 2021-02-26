@@ -28,6 +28,17 @@ def is_auth(url, auth='/auth/'):
 def is_index(url, index='/'):
     return url == index
 
+
 @register.filter
 def is_favorite(recipe, user):
     return recipe.is_favorite(user)
+
+
+@register.filter
+def is_purch(recipe, user):
+    return recipe.is_purch(user)
+
+
+@register.filter
+def is_subscribe(author, user):
+    return author.is_subscribe(user)

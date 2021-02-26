@@ -71,6 +71,9 @@ class Recipe(models.Model):
     def is_favorite(self, user):
         return self.liked.filter(user=user).exists()
 
+    def is_purch(self, user):
+        return self.purchased.filter(user=user).exists()
+
 
 class RecipesIngredient(models.Model):
     """Класс Ингредиентов в рецептах"""
@@ -93,7 +96,10 @@ class ShoppingList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='purchases')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
-                               related_name='+')
+                               related_name='purchased')
+
+    class Meta:
+        unique_together = ('recipe', 'user')
 
     def __str__(self):
         return f'{self.user} -> {self.recipe}'
@@ -107,6 +113,9 @@ class Follow(models.Model):
     # ссылка на объект пользователя, на которого подписываются.
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='following')
+    
+    class Meta:
+        unique_together = ('user', 'author')
 
     def __str__(self):
         return f'{self.user} follow {self.author}'
@@ -119,5 +128,8 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                related_name='liked')
 
+    class Meta:
+        unique_together = ('recipe', 'user')
+    
     def __str__(self):
         return f'{self.user} like {self.recipe}'

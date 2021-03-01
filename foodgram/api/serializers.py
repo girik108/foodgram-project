@@ -1,17 +1,10 @@
 from rest_framework import serializers
 
-from recipes.models import Favorite, Recipe
+from recipes.models import Ingredient
 
 
-class FavoriteSerializer(serializers.ModelSerializer):
-
+class IngredientSerializer(serializers.ModelSerializer):
+    dimension = serializers.StringRelatedField(read_only=True)
     class Meta:
-        fields = '__all__'
-        model = Favorite
-
-
-class RecipeSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = '__all__'
-        model = Recipe
-        lookup_field='id'
+        exclude = ('id',)
+        model = Ingredient

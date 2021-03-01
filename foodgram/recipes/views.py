@@ -14,7 +14,7 @@ from django.views import View
 
 from django.http import HttpResponse
 
-from .models import Unit, Recipe, Ingredient, RecipesIngredient, Tag, Follow
+from .models import Dimension, Recipe, Ingredient, RecipesIngredient, Tag, Follow
 from .forms import RecipeForm
 from .filters import RecipeFilter
 
@@ -93,13 +93,11 @@ class RecipeDetail(DetailView):
 
 class RecipeCreate(LoginRequiredMixin, CreateView):
     model = Recipe
-    template_name = 'add.html'
+    template_name = 'create/create.html'
     form_class = RecipeForm
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['tags'] = Tag.objects.all()
         return context
 

@@ -1,11 +1,10 @@
 from django.contrib import admin
 
-from .models import Unit, Recipe, Ingredient, RecipesIngredient, Tag, Follow, Favorite, ShoppingList
+from recipes import models
 
-
-class UnitAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name', 'abbr')
-    search_fields = ('name', 'abbr')
+class DimensionAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'abbr')
+    search_fields = ('title', 'abbr')
     empty_value_display = '-пусто-'
 
 
@@ -16,8 +15,8 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name')
-    search_fields = ('name',)
+    list_display = ('pk', 'title', 'dimension')
+    search_fields = ('title',)
     empty_value_display = '-пусто-'
 
 
@@ -29,8 +28,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class RecipesIngredientAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'recipe', 'ingredient',
-                    'unit', 'count',)
+    list_display = ('pk', 'recipe', 'ingredient', 'count',)
 
 
 class FollowAdmin(admin.ModelAdmin):
@@ -43,11 +41,11 @@ class FavoriteAdmin(admin.ModelAdmin):
 class ShoppingListAdmin(admin.ModelAdmin): 
     list_display = ('pk', 'user', 'recipe')
 
-admin.site.register(Unit, UnitAdmin)
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(RecipesIngredient, RecipesIngredientAdmin)
-admin.site.register(Tag, TagAdmin)
-admin.site.register(Follow, FollowAdmin)
-admin.site.register(Favorite, FavoriteAdmin)
-admin.site.register(ShoppingList, ShoppingListAdmin)
+admin.site.register(models.Dimension, DimensionAdmin)
+admin.site.register(models.Ingredient, IngredientAdmin)
+admin.site.register(models.Recipe, RecipeAdmin)
+admin.site.register(models.RecipesIngredient, RecipesIngredientAdmin)
+admin.site.register(models.Tag, TagAdmin)
+admin.site.register(models.Follow, FollowAdmin)
+admin.site.register(models.Favorite, FavoriteAdmin)
+admin.site.register(models.ShoppingList, ShoppingListAdmin)

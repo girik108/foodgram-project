@@ -9,43 +9,20 @@ from rest_framework.response import Response
 
 
 from recipes.models import Ingredient, Follow, Favorite, Recipe, ShoppingList
-from .serializers import FavoriteSerializer, RecipeSerializer
+from .serializers import IngredientSerializer
 
 
 User = get_user_model()
 
 
-class FavoriteView(views.APIView):
+class IngredientView(views.APIView):
     permission_classes = [IsAuthenticated]
-    request_model = Recipe
-    operate_model = Favorite
 
-    def post(self, request):
-        user = self.request.user
-        pk = request.data.get('id')
-        if not (pk or pk.isdigit()):
-            return Response({'success': 'false'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            recipe = self.request_model.objects.get(pk=int(pk))
-            instance = self.operate_model(user=user, recipe=recipe)
-        except ObjectDoesNotExist:
-            return Response({'success': 'false'}, status=status.HTTP_404_NOT_FOUND)
-        instance.save()
-        return Response({'success': 'true'}, status=status.HTTP_201_CREATED)
-
-    def delete(self, request, pk):
-        try:
-            recipe = self.request_model.objects.get(id=pk)
-            instance = self.operate_model.objects.get(
-                recipe=recipe, user=self.request.user)
-        except ObjectDoesNotExist:
-            return Response({'success': 'false'}, status=status.HTTP_404_NOT_FOUND)
-        instance.delete()
-        return Response({'success': 'true'}, status=status.HTTP_200_OK)
-
-
-class ShoppingListView(FavoriteView):
-    operate_model = ShoppingList
+    def get(self, request):
+        query = request.GET.get('query')
+        serializer = IngredientSerializer(
+            Ingredient.objects.filter(title__icontains=query), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class FollowView(views.APIView):
@@ -61,6 +38,7 @@ class FollowView(views.APIView):
         return self.operate_model(**kwargs)
 
     def custom_get_obj(self, pk):
+        kwargs = {}
         kwargs['user'] = self.request.user
         kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
         return self.operate_model.objects.get(**kwargs)
@@ -71,10 +49,7 @@ class FollowView(views.APIView):
         if not (pk or pk.isdigit()):
             return Response({'success': 'false'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            kwargs = {}
-            kwargs['user'] = self.request.user
-            kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
-            instance = self.operate_model(**kwargs)
+            instance = self.custom_create_obj(pk)
         except IntegrityError as e:
             return Response({'success': 'false'}, status=status.HTTP_404_NOT_FOUND)
         instance.save()
@@ -87,3 +62,14 @@ class FollowView(views.APIView):
             return Response({'success': 'false'}, status=status.HTTP_404_NOT_FOUND)
         instance.delete()
         return Response({'success': 'true'}, status=status.HTTP_200_OK)
+
+
+class FavoriteView(FollowView):
+    permission_classes = [IsAuthenticated]
+    request_model = Recipe
+    operate_model = Favorite
+    arg_name = 'recipe'
+
+
+class ShoppingListView(FavoriteView):
+    operate_model = ShoppingList

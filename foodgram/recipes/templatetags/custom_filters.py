@@ -40,5 +40,5 @@ def is_purch(recipe, user):
 
 
 @register.filter
-def is_subscribe(author, user):
-    return author.is_subscribe(user)
+def is_subscribe(user, author):
+    return user.is_subscribe(author)

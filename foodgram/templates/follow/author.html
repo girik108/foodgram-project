@@ -15,6 +15,11 @@
         </ul>
     </div>
     <div class="card-user__footer">
+        {% load custom_filters %}
+        {% if user|is_subscribe:author %}
         <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+        {% else %}
+        <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
+        {% endif %}
     </div>
 </div>

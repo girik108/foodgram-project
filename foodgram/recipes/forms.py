@@ -1,11 +1,13 @@
 from django import forms
-from .models import Recipe, Tag
+from .models import Recipe, Tag, Ingredient
 
 
 class RecipeForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
+    tag = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(), widget=forms.CheckboxSelectMultiple,)
+    
+    ingredients = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all())
 
     class Meta:
         model = Recipe
-        exclude = ('pk',)
+        exclude = ('pk','author')

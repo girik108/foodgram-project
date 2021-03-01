@@ -9,10 +9,9 @@ CSS_COLORS = ('purple', 'green', 'orange')
 User = get_user_model()
 
 
-class Unit(models.Model):
+class Dimension(models.Model):
     """Класс Единиц измерения ингредиентов"""
-    name = models.CharField(max_length=100, null=True, blank=True)
-    abbr = models.CharField(max_length=25, default='г')
+    abbr = models.CharField(max_length=25, default='')
 
     def __str__(self):
         return f'{self.abbr}'
@@ -20,13 +19,15 @@ class Unit(models.Model):
 
 class Ingredient(models.Model):
     """Класс Ингредиентов"""
-    name = models.CharField(max_length=50)
+    title = models.CharField(max_length=50)
+    dimension = models.ForeignKey(Dimension, on_delete=models.CASCADE,
+                                  related_name='+')
 
     class Meta:
-        ordering = ['name']
+        ordering = ['title']
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.title}'
 
 
 class Tag(models.Model):
@@ -48,7 +49,7 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name='Название рецепта')
     text = models.TextField()
     pub_date = models.DateTimeField(
         'date published', auto_now_add=True, db_index=True)
@@ -81,7 +82,6 @@ class RecipesIngredient(models.Model):
                                related_name='ingredients')
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,
                                    related_name='recipes')
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE,)
     count = models.PositiveSmallIntegerField(default=1)
 
     class Meta:
@@ -113,7 +113,7 @@ class Follow(models.Model):
     # ссылка на объект пользователя, на которого подписываются.
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='following')
-    
+
     class Meta:
         unique_together = ('user', 'author')
 
@@ -130,6 +130,6 @@ class Favorite(models.Model):
 
     class Meta:
         unique_together = ('recipe', 'user')
-    
+
     def __str__(self):
         return f'{self.user} like {self.recipe}'

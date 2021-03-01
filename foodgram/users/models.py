@@ -7,4 +7,4 @@ class User(AbstractUser):
         verbose_name='email address', max_length=255, unique=True)
     
     def is_subscribe(self, user):
-         return self.follower.filter(user=user).exists()
+         return self.following.filter(user=user).exists()

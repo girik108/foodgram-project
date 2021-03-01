@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 
 from rest_framework.permissions import IsAuthenticated
@@ -11,7 +12,7 @@ from recipes.models import Ingredient, Follow, Favorite, Recipe, ShoppingList
 from .serializers import FavoriteSerializer, RecipeSerializer
 
 
-User = get_user_model
+User = get_user_model()
 
 
 class FavoriteView(views.APIView):
@@ -51,9 +52,10 @@ class FollowView(views.APIView):
     permission_classes = [IsAuthenticated]
     request_model = User
     arg_name = 'author'
-    operate_model = ShoppingList
+    operate_model = Follow
 
     def custom_create_obj(self, pk):
+        kwargs = {}
         kwargs['user'] = self.request.user
         kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
         return self.operate_model(**kwargs)
@@ -61,7 +63,7 @@ class FollowView(views.APIView):
     def custom_get_obj(self, pk):
         kwargs['user'] = self.request.user
         kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
-        return self.operate_model(**kwargs)
+        return self.operate_model.objects.get(**kwargs)
 
     def post(self, request):
         user = self.request.user
@@ -69,17 +71,18 @@ class FollowView(views.APIView):
         if not (pk or pk.isdigit()):
             return Response({'success': 'false'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            instance = self.create_obj(pk)
-        except ObjectDoesNotExist:
+            kwargs = {}
+            kwargs['user'] = self.request.user
+            kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
+            instance = self.operate_model(**kwargs)
+        except IntegrityError as e:
             return Response({'success': 'false'}, status=status.HTTP_404_NOT_FOUND)
         instance.save()
         return Response({'success': 'true'}, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
         try:
-            recipe = self.request_model.objects.get(id=pk)
-            instance = self.operate_model.objects.get(
-                recipe=recipe, user=self.request.user)
+            instance = self.custom_get_obj(pk)
         except ObjectDoesNotExist:
             return Response({'success': 'false'}, status=status.HTTP_404_NOT_FOUND)
         instance.delete()

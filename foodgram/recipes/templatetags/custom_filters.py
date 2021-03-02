@@ -18,6 +18,16 @@ def text_split(value, sep='\n'):
 def addclass(field, css):
     return field.as_widget(attrs={"class": css})
 
+@register.filter(is_safe=True)
+def widget_with_classes(value, arg):
+    value.attrs['class'] += f' {arg}'
+    return value  
+
+
+@register.filter(is_safe=True)
+def label_with_classes(value, arg):
+    return value.label_tag(attrs={'class': arg})
+
 
 @register.filter
 def is_auth(url, auth='/auth/'):

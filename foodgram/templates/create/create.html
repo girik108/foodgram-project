@@ -11,7 +11,7 @@
     <form class="form" method="post" enctype="multipart/form-data" action="{{ request.path }}">
         {% csrf_token %}
         <div class="form__group">
-            <label for="{{ form.name.id_for_label }}" class="form__label">Название рецепта</label>
+            {{ form.name|label_with_classes:"form__label" }}
             <div class="form__field-group">
                 {{ form.name|addclass:"form__input" }}
                 {% for error in form.name.errors %}
@@ -20,22 +20,21 @@
             </div>
         </div>
         <div class="form__group">
-            <p class="form__label">Теги</p>
+            <p class="form__label">{{ form.tags.label }}</p>
             <div class="form__field-group">
                 <div class="tags">
                     {% for tag in tags %}
                     <div class="tags__item">
-                        <input type="checkbox" name="{{ tag.slug }}" id="id_name" class="tags__checkbox tags__checkbox_style_{{ tag.color }} " checked>
+                        <input type="checkbox" name="{{ tag.slug }}" id="id_{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}">
                         <label for="id_{{ tag.slug }}" class="tags__label">{{ tag.name }}</label>
                     </div>
                     {% endfor %}
                 </div>
-                {% for error in form.name.errors %}
+                {% for error in form.tags.errors %}
                 <span class="form__error">{{ error|escape }}</span>
                 {% endfor %}
             </div>
         </div>
-        {{ form.ingredients }}
         <div class="form__group">
             <label for="nameIngredient" class="form__label">Ингредиенты</label>
             <div class="form__field-group">
@@ -55,25 +54,31 @@
             </div>
         </div>
         <div class="form__group">
-            <label for="id_time" class="form__label">Время приготовления</label>
+            {{ form.time|label_with_classes:"form__label" }}
             <div class="form__field-group form__field-group_time">
-                <input type="text" id="id_time" name="name" class="form__input">
+                {{ form.time|addclass:"form__input" }}
                 <label for="id_time" class="form__label">минут</label>
-                <span class="form__error"></span>
+                {% for error in form.time.errors %}
+                <span class="form__error">{{ error|escape }}</span>
+                {% endfor %}
             </div>
         </div>
         <div class="form__group">
-            <label for="id_description" class="form__label">Описание</label>
+            {{ form.description|label_with_classes:"form__label" }}
             <div class="form__field-group">
-                <textarea name="description" id="id_description" rows="8" class="form__textarea"></textarea>
-                <span class="form__error"></span>
+                {{ form.description|addclass:"form__textarea" }}
+                {% for error in form.description.errors %}
+                <span class="form__error">{{ error|escape }}</span>
+                {% endfor %}
             </div>
         </div>
         <div class="form__group">
-            <span class="form__label">Загрузить фото</span>
+            <span class="form__label">{{ form.image.label }}</span>
             <div class="form__field-group">
-                <input type="file" name="file" id="id_file">
-                <span class="form__error"></span>
+                {{ form.image }}
+                {% for error in form.image.errors %}
+                <span class="form__error">{{ error|escape }}</span>
+                {% endfor %}
             </div>
         </div>
         <div class="form__footer">

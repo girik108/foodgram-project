@@ -21,7 +21,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name', 'text',
+    list_display = ('pk', 'name', 'description',
                     'pub_date', 'image', 'author', 'time')
     search_fields = ('name',)
     empty_value_display = '-пусто-'

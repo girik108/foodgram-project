@@ -50,7 +50,7 @@ class Tag(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название рецепта')
-    text = models.TextField()
+    description = models.TextField()
     pub_date = models.DateTimeField(
         'date published', auto_now_add=True, db_index=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE,

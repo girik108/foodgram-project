@@ -12,7 +12,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views import View
 
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from .models import Dimension, Recipe, Ingredient, RecipesIngredient, Tag, Follow
 from .forms import RecipeForm
@@ -100,6 +100,26 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['tags'] = Tag.objects.all()
         return context
+
+    def post(self, request, *args, **kwargs):
+        VALUES = {'name': 'nameIngredient',
+                  'value': 'valueIngredient',
+                  'units': 'unitsIngredient', }
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            keys = request.POST.keys()
+            result = {}
+            keys = [key for key in keys if key.startswith(VALUES['name'])]
+            for key in keys:
+                name, num = key.split('_')
+                dct = {}
+                dct[name] = request.POST[key]
+                dct[VALUES[1]] = request.POST[VALUES[1] + '_' + num]
+                result[num] = dct
+
+            return JsonResponse(result)
+
+        return JsonResponse(form.errors)
 
 
 class RecipeUpdate(LoginRequiredMixin, UpdateView):

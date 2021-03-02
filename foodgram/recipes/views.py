@@ -14,7 +14,7 @@ from django.views import View
 
 from django.http import HttpResponse, JsonResponse
 
-from .models import Dimension, Recipe, Ingredient, RecipesIngredient, Tag, Follow
+from .models import Dimension, Recipe, Ingredient, RecipesIngredient, Tag, Follow, ShoppingList
 from .forms import RecipeForm
 from .filters import RecipeFilter
 
@@ -145,5 +145,21 @@ class UnFollowUser(LoginRequiredMixin, View):
     pass
 
 
-class ShopList(View):
-    pass
+class ShopList(LoginRequiredMixin, ListView):
+    model = Recipe
+    template_name = 'shoplist/index.html'
+    paginate_by = 10
+    context_object_name = 'recipes'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['shoplist'] = True
+        return context
+
+    def get_queryset(self):
+        return Recipe.objects.filter(purchased__user=self.request.user)
+
+
+class ShopListDelete(LoginRequiredMixin, DeleteView):
+    model = ShoppingList
+    success_url = reverse_lazy('shoplist')

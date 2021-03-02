@@ -1,17 +1,11 @@
 {% extends "../base.html" %}
 {% block title %}Мои подписки{% endblock %}
-
+{% block main_title %}Мои подписки{% endblock %}
 {% block css %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
 {% endblock %}
-
 {% block content %}
-
-<div class="main__header">
-    <h1 class="main__title">Мои подписки</h1>
-</div>
-
 <div class="card-list">
 {% for author in object_list %}
     {% include 'follow/author.html' with author=author %}
@@ -21,5 +15,4 @@
     {% include "paginator.html" with items=page_obj paginator=paginator %}
 {% endif %} 
 {% endblock %}
-
 {% block scripts %}{% include "follow/scripts.html" %}{% endblock %}

@@ -8,14 +8,11 @@
 {% block content %}
 <div class="card-list card-list_column">
     <ul class="shopping-list">
-        {% for recipe in recipes %}
-        {% include 'shoplist/recipe.html' with recipe=recipe %}
+        {% for shoplist in shoplists %}
+        {% include 'shoplist/recipe.html' with recipe=shoplist.recipe shoplist=shoplist %}
         {% endfor %}
     </ul>
-    <a href="#"><button class="button button_style_blue">Скачать список</button></a>
+    <a href="{% url 'shoplistpdf' %}"><button class="button button_style_blue">Скачать список</button></a>
 </div>
-{% if page_obj.has_other_pages %}
-    {% include "paginator.html" with items=page_obj paginator=paginator %}
-{% endif %} 
 {% endblock %}
 {% block scripts %}{% include "shoplist/scripts.html" %}{% endblock %}

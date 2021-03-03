@@ -1,18 +1,28 @@
+import io
+import os
+
+from django.db.models import Sum
+
+from django.http import FileResponse, HttpResponse, JsonResponse
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.core.exceptions import PermissionDenied
 
 from django.urls import reverse_lazy
+from django.conf import settings
 
 from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views import View
 
-
-from django.http import HttpResponse, JsonResponse
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 from .models import Dimension, Recipe, Ingredient, RecipesIngredient, Tag, Follow, ShoppingList
 from .forms import RecipeForm
@@ -146,10 +156,10 @@ class UnFollowUser(LoginRequiredMixin, View):
 
 
 class ShopList(LoginRequiredMixin, ListView):
-    model = Recipe
+    model = ShoppingList
     template_name = 'shoplist/index.html'
     paginate_by = 10
-    context_object_name = 'recipes'
+    context_object_name = 'shoplists'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -157,9 +167,39 @@ class ShopList(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        return Recipe.objects.filter(purchased__user=self.request.user)
+        return ShoppingList.objects.filter(user=self.request.user)
 
 
 class ShopListDelete(LoginRequiredMixin, DeleteView):
     model = ShoppingList
     success_url = reverse_lazy('shoplist')
+    template_name = 'shoplist/confirm_delete.html'
+
+    def get_object(self, queryset=None):
+        obj = super(ShopListDelete, self).get_object()
+        if not obj.user == self.request.user:
+            raise PermissionDenied
+        return obj
+
+
+class ShopListPdf(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        #ingr = RecipesIngredient.objects.filter(recipe__purchased__user=self.request.user).values('ingredient').annotate(summ=Sum('count'))
+        #ingr = Ingredient.objects.filter()
+        
+        STATIC_DIR = settings.STATIC_ROOT
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer)
+        pdfmetrics.registerFont(TTFont('LiberationSerif', os.path.join(
+            STATIC_DIR, 'fonts/liberation-serif.ttf'), 'UTF-8'))
+        p.setFont('LiberationSerif', 20)
+        p.setLineWidth(.3)
+        p.drawCentredString(300, 750, 'Список покупок')
+        p.line(50, 740, 550, 740)
+        step = 30
+        for num, item in enumerate(ingr):
+            p.drawString(50, 720-num*step, f'{item}')
+        p.showPage()
+        p.save()
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='shoplist.pdf')

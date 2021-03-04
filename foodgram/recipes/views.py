@@ -1,6 +1,3 @@
-import io
-import os
-
 from django.db.models import Sum
 
 from django.http import FileResponse, HttpResponse, JsonResponse
@@ -20,14 +17,11 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views import View
 
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 
 from .models import Dimension, Recipe, Ingredient, RecipesIngredient, Tag, Follow, ShoppingList
 from .forms import RecipeForm
 from .filters import RecipeFilter
-
+from .utils import create_pdf
 
 User = get_user_model()
 
@@ -35,7 +29,7 @@ User = get_user_model()
 class RecipeList(ListView):
     model = Recipe
     template_name = 'main/index.html'
-    paginate_by = 6
+    paginate_by = 1
 
     def get_queryset(self):
         qs = self.model.objects.all()
@@ -63,7 +57,7 @@ class AuthorRecipeList(ListView):
 class FavoriteRecipeList(LoginRequiredMixin, ListView):
     model = Recipe
     template_name = 'favorite/index.html'
-    paginate_by = 10
+    paginate_by = 6
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -77,7 +71,7 @@ class FavoriteRecipeList(LoginRequiredMixin, ListView):
 class SubAuthorList(LoginRequiredMixin, ListView):
     model = User
     template_name = 'follow/index.html'
-    paginate_by = 10
+    paginate_by = 6
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -158,7 +152,6 @@ class UnFollowUser(LoginRequiredMixin, View):
 class ShopList(LoginRequiredMixin, ListView):
     model = ShoppingList
     template_name = 'shoplist/index.html'
-    paginate_by = 10
     context_object_name = 'shoplists'
 
     def get_context_data(self, **kwargs):
@@ -184,22 +177,7 @@ class ShopListDelete(LoginRequiredMixin, DeleteView):
 
 class ShopListPdf(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        #ingr = RecipesIngredient.objects.filter(recipe__purchased__user=self.request.user).values('ingredient').annotate(summ=Sum('count'))
-        #ingr = Ingredient.objects.filter()
-        
-        STATIC_DIR = settings.STATIC_ROOT
-        buffer = io.BytesIO()
-        p = canvas.Canvas(buffer)
-        pdfmetrics.registerFont(TTFont('LiberationSerif', os.path.join(
-            STATIC_DIR, 'fonts/liberation-serif.ttf'), 'UTF-8'))
-        p.setFont('LiberationSerif', 20)
-        p.setLineWidth(.3)
-        p.drawCentredString(300, 750, 'Список покупок')
-        p.line(50, 740, 550, 740)
-        step = 30
-        for num, item in enumerate(ingr):
-            p.drawString(50, 720-num*step, f'{item}')
-        p.showPage()
-        p.save()
-        buffer.seek(0)
+        ingredients = Ingredient.objects.filter(recipes__recipe__purchased__user=self.request.user).annotate(summ=Sum('recipes__count'))
+        buffer = create_pdf(ingredients)
+
         return FileResponse(buffer, as_attachment=True, filename='shoplist.pdf')

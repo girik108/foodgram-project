@@ -1,25 +1,23 @@
 {% extends "../base.html" %}
 {% block title %}Рецепты{% endblock %}
+{% block main_title %}{{ author.get_full_name }}{% endblock %}
+{% block tags %}{% include "tags.html" %}{% endblock %}
 {% load custom_filters %}
 {% block content %}
-    <div class="main__header">
-        <h1 class="main__title">{{ author.get_full_name }}</h1>
-        {% include "tags.html" %}
-    </div>
-    <div class="author-subscribe" data-author="{{ author.id }}">
-        <p style="padding: 0 0 2em 0;">
-            {% if user|is_subscribe:author %}
-            <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
-            {% else %}
-            <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
-            {% endif %}
-        </p>
-    </div>
-    <div class="card-list">
+<div class="author-subscribe" data-author="{{ author.id }}">
+    <p style="padding: 0 0 2em 0;">
+    {% if user|is_subscribe:author %}
+    <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+    {% else %}
+    <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
+    {% endif %}
+    </p>
+</div>
+<div class="card-list">
     {% for recipe in object_list %}
     {% include "recipe.html" with recipe=recipe %}
     {% endfor %}
-    </div>
+</div>
     {% if page_obj.has_other_pages %}
     {% include "paginator.html" with items=page_obj paginator=paginator %}
     {% endif %} 

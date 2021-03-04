@@ -22,6 +22,7 @@ class IngredientView(views.APIView):
         query = request.GET.get('query')
         serializer = IngredientSerializer(
             Ingredient.objects.filter(title__icontains=query), many=True)
+            
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -35,12 +36,14 @@ class FollowView(views.APIView):
         kwargs = {}
         kwargs['user'] = self.request.user
         kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
+        
         return self.operate_model(**kwargs)
 
     def custom_get_obj(self, pk):
         kwargs = {}
         kwargs['user'] = self.request.user
         kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
+        
         return self.operate_model.objects.get(**kwargs)
 
     def post(self, request):
@@ -48,19 +51,15 @@ class FollowView(views.APIView):
         pk = request.data.get('id')
         if not (pk or pk.isdigit()):
             return Response({'success': 'false'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            instance = self.custom_create_obj(pk)
-        except IntegrityError as e:
-            return Response({'success': 'false'}, status=status.HTTP_404_NOT_FOUND)
+        instance = self.custom_create_obj(pk)
         instance.save()
+        
         return Response({'success': 'true'}, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
-        try:
-            instance = self.custom_get_obj(pk)
-        except ObjectDoesNotExist:
-            return Response({'success': 'false'}, status=status.HTTP_404_NOT_FOUND)
+        instance = self.custom_get_obj(pk)
         instance.delete()
+        
         return Response({'success': 'true'}, status=status.HTTP_200_OK)
 
 

@@ -7,6 +7,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% load static %}
+	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <title>{% block title %}Рецепты{% endblock %}</title>
     {% block css %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
@@ -17,6 +18,7 @@
 <main class="main container">
     <div class="main__header">
         <h1 class="main__title">{% block main_title %}{% endblock %}</h1>
+		{% block tags %}{% endblock %}
     </div>
     {% block content %}
     {% endblock %}

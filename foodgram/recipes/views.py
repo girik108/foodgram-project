@@ -3,7 +3,6 @@ from django.db.models import Sum
 from django.http import FileResponse, HttpResponse, JsonResponse
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
@@ -23,16 +22,18 @@ from .forms import RecipeForm
 from .filters import RecipeFilter
 from .utils import create_pdf
 
+PAGINATE = 6
 User = get_user_model()
 
 
 class RecipeList(ListView):
     model = Recipe
     template_name = 'main/index.html'
-    paginate_by = 1
+    paginate_by = PAGINATE
 
     def get_queryset(self):
-        qs = self.model.objects.all()
+        qs = self.model.objects.all().prefetch_related(
+            'tag', 'author', 'purchased__user', 'liked__user')
         recipe_filtered = RecipeFilter(self.request.GET, queryset=qs)
         return recipe_filtered.qs
 
@@ -40,7 +41,7 @@ class RecipeList(ListView):
 class AuthorRecipeList(ListView):
     model = Recipe
     template_name = 'author/index.html'
-    paginate_by = 6
+    paginate_by = PAGINATE
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -49,7 +50,8 @@ class AuthorRecipeList(ListView):
 
     def get_queryset(self):
         self.author = get_object_or_404(User, username=self.kwargs['username'])
-        qs = self.author.recipes.all()
+        qs = self.author.recipes.all().prefetch_related(
+            'tag', '')
         recipe_filtered = RecipeFilter(self.request.GET, queryset=qs)
         return recipe_filtered.qs
 
@@ -57,7 +59,7 @@ class AuthorRecipeList(ListView):
 class FavoriteRecipeList(LoginRequiredMixin, ListView):
     model = Recipe
     template_name = 'favorite/index.html'
-    paginate_by = 6
+    paginate_by = PAGINATE
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -65,13 +67,14 @@ class FavoriteRecipeList(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        return Recipe.objects.filter(liked__user=self.request.user)
+        return Recipe.objects.filter(
+            liked__user=self.request.user).prefetch_related('tag', 'author')
 
 
 class SubAuthorList(LoginRequiredMixin, ListView):
     model = User
     template_name = 'follow/index.html'
-    paginate_by = 6
+    paginate_by = PAGINATE
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -136,19 +139,6 @@ class RecipeDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('recipes')
 
 
-class FollowUser(LoginRequiredMixin, View):
-    def get(self, request, username):
-        author = get_object_or_404(User, username=username)
-        if author != request.user:
-            follow, created = Follow.objects.get_or_create(
-                user=request.user, author=author)
-        return redirect('recipe', author, 1)
-
-
-class UnFollowUser(LoginRequiredMixin, View):
-    pass
-
-
 class ShopList(LoginRequiredMixin, ListView):
     model = ShoppingList
     template_name = 'shoplist/index.html'
@@ -169,15 +159,23 @@ class ShopListDelete(LoginRequiredMixin, DeleteView):
     template_name = 'shoplist/confirm_delete.html'
 
     def get_object(self, queryset=None):
-        obj = super(ShopListDelete, self).get_object()
-        if not obj.user == self.request.user:
+        shoplist = super(ShopListDelete, self).get_object()
+        if not shoplist.user == self.request.user:
             raise PermissionDenied
-        return obj
+        return shoplist
 
 
 class ShopListPdf(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        ingredients = Ingredient.objects.filter(recipes__recipe__purchased__user=self.request.user).annotate(summ=Sum('recipes__count'))
+        ingredients = Ingredient.objects.filter(
+            recipes__recipe__purchased__user=self.request.user).annotate(summ=Sum('recipes__count'))
         buffer = create_pdf(ingredients)
 
         return FileResponse(buffer, as_attachment=True, filename='shoplist.pdf')
+
+
+def page_not_found(request, exception): 
+    return render(request, "misc/404.html", {"path": request.build_absolute_uri()}, status=404) 
+
+def server_error(request): 
+    return render(request, "misc/500.html", status=500)

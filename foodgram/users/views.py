@@ -14,14 +14,10 @@ class SignUp(CreateView):
 
 class UserLoginView(LoginView):
     authentication_form = AuthForm 
-    #template_name = 'auth/auth.html'
 
 class PassChange(PasswordChangeView, LoginRequiredMixin):
-    success_url = reverse_lazy('profile')
     form_class = PassChangeForm
 
 class PassReset(PasswordResetView):
     form_class = PassResetForm
 
-class LogoutUserView(LogoutView):
-    template_name = 'registration/logout.html'

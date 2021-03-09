@@ -33,7 +33,7 @@ class RecipeList(ListView):
 
     def get_queryset(self):
         qs = self.model.objects.all().prefetch_related(
-            'tag', 'author', 'purchased__user', 'liked__user')
+            'tags', 'author', 'purchased__user', 'liked__user')
         recipe_filtered = RecipeFilter(self.request.GET, queryset=qs)
         return recipe_filtered.qs
 
@@ -51,7 +51,7 @@ class AuthorRecipeList(ListView):
     def get_queryset(self):
         self.author = get_object_or_404(User, username=self.kwargs['username'])
         qs = self.author.recipes.all().prefetch_related(
-            'tag', '')
+            'tags')
         recipe_filtered = RecipeFilter(self.request.GET, queryset=qs)
         return recipe_filtered.qs
 
@@ -68,7 +68,7 @@ class FavoriteRecipeList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Recipe.objects.filter(
-            liked__user=self.request.user).prefetch_related('tag', 'author')
+            liked__user=self.request.user).prefetch_related('tags', 'author')
 
 
 class SubAuthorList(LoginRequiredMixin, ListView):
@@ -103,16 +103,15 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
     template_name = 'create/create.html'
     form_class = RecipeForm
 
-
     def post(self, request, *args, **kwargs):
         VALUES = {'name': 'nameIngredient',
                   'value': 'valueIngredient',
                   'units': 'unitsIngredient', }
 
         form = self.form_class(request.POST)
-        
+
         if form.is_valid():
-            recipe = form.save(commit=False) 
+            recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.save()
             for tag_id in form.cleaned_data['tags']:
@@ -134,7 +133,30 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
 
 class RecipeUpdate(LoginRequiredMixin, UpdateView):
     model = Recipe
-    fields = ['name']
+    template_name = 'create/create.html'
+    form_class = RecipeForm
+
+    def get_context_data(self, **kwargs):
+        recipe = self.get_object()
+        context = super().get_context_data(**kwargs)
+        context['recipe_tags'] = list(
+            recipe.tags.values_list('slug', flat=True))
+        ing_lst = recipe.ingredients.all().prefetch_related('ingredient')
+        context['recipe_ingredients'] = enumerate(ing_lst, start=1)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        recipe = self.get_object()
+        form = self.form_class(request.POST or None,
+                               files=request.FILES or None, instance=recipe)
+
+        if form.is_valid():
+            recipe = form.save(commit=False)
+            recipe.save()
+            for tag_id in form.cleaned_data['tags']:
+                recipe.tags.add(Tag.objects.get(id=tag_id))
+
+        return render(request, self.template_name, {'form': form})
 
 
 class RecipeDelete(LoginRequiredMixin, DeleteView):
@@ -177,8 +199,9 @@ class ShopListPdf(LoginRequiredMixin, View):
         return FileResponse(buffer, as_attachment=True, filename='shoplist.pdf')
 
 
-def page_not_found(request, exception): 
-    return render(request, "misc/404.html", {"path": request.build_absolute_uri()}, status=404) 
+def page_not_found(request, exception):
+    return render(request, "misc/404.html", {"path": request.build_absolute_uri()}, status=404)
 
-def server_error(request): 
+
+def server_error(request):
     return render(request, "misc/500.html", status=500)

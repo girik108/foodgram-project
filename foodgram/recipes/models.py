@@ -56,7 +56,7 @@ class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes')
     image = models.ImageField(upload_to='images/', null=True, blank=True)
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, )
     tags = models.ManyToManyField(Tag)
     time = models.PositiveSmallIntegerField()
 

@@ -3,7 +3,7 @@ from .models import Recipe, Tag, Ingredient
 
 
 class TagSelectMultiple(forms.CheckboxSelectMultiple):
-    template_name = 'forms/widgets/checkbox.html'
+    #template_name = 'forms/widgets/checkbox.html'
 
 
     def id_for_label(self, id_, index=''):
@@ -25,14 +25,16 @@ class RecipeForm(forms.ModelForm):
         kwargs.setdefault('label_suffix', '')
         super().__init__(*args, **kwargs)
 
-    tags = forms.ModelMultipleChoiceField(
+    tags = forms.MultipleChoiceField(
         required=False,
-        queryset=Tag.objects.all(),
-        widget=TagSelectMultiple(),
+        #queryset=Tag.objects.all(),
+        #widget=TagSelectMultiple(),
         label='Теги')
 
-    ingredient = forms.ModelChoiceField(
-        required=False, queryset=Ingredient.objects.all())
+    ingredient = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Ingredient.objects.all(),
+        widget=forms.HiddenInput())
 
     class Meta:
         model = Recipe
@@ -48,9 +50,9 @@ class RecipeForm(forms.ModelForm):
 
         for slug_id, slug in tags:
             if self.data.get(slug):
-                data.append(slug_id)
+                data.append(slug)
 
         if not data:
-            raise forms.ValidationError("TAGS empty")
+            raise forms.ValidationError('Необходимо отметить хотябы один тег')
 
         return data

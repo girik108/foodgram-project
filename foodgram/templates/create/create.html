@@ -22,7 +22,14 @@
         <div class="form__group">
             <p class="form__label">{{ form.tags.label }}</p>
             <div class="form__field-group">
-                {{ form.tags }}
+                <div class="tags">
+                    {% for tag in tag_list %}
+                    <div class="tags__item">
+                        <input type="checkbox" name="{{ tag.slug }}" id="id_{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}" {% if tag.slug in recipe_tags %}checked{% endif %}>
+                        <label for="id_{{ tag.slug }}" class="tags__label">{{ tag.name }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
                 {% for error in form.tags.errors %}
                 <span class="form__error">{{ error|escape }}</span>
                 {% endfor %}
@@ -40,7 +47,15 @@
                     <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                 </div>
                 <div class="form__field-group-ingredientes-container">
-
+                    {% for num, ingr in recipe_ingredients %}
+                    <div class="form__field-item-ingredient" id="ing_{{ num }}">
+                        <span> {{ ingr.ingredient.title.capitalize }} {{ingr.count }}{{ ingr.ingredient.dimension }}.</span>
+                        <span class="form__field-item-delete"></span>
+                        <input id="nameIngredient_{{ num }}" name="nameIngredient_{{ num }}" type="hidden" value="{{ ingr.ingredient.title }}">
+                        <input id="valueIngredient_{{ num }}" name="valueIngredient_{{ num }}" type="hidden" value="{{ ingr.count }}">
+                        <input id="unitsIngredient_{{ num }}" name="unitsIngredient_{{ num }}" type="hidden" value="{{ingr.ingredient.dimension}}.">
+                    </div>
+                    {% endfor %}
                 </div>
                 <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
                 <span class="form__error"></span>
@@ -54,6 +69,7 @@
                 {% for error in form.time.errors %}
                 <span class="form__error">{{ error|escape }}</span>
                 {% endfor %}
+                
             </div>
         </div>
         <div class="form__group">

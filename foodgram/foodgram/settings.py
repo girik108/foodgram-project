@@ -75,7 +75,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'foodgram.context_processors.tag_list',
-                'foodgram.context_processors.tag_get',
             ],
         },
     },

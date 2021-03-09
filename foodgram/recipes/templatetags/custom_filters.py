@@ -25,6 +25,16 @@ def widget_with_classes(value, arg):
 
 
 @register.filter(is_safe=True)
+def tag_with_classes(value, arg):
+    value.attrs['class'] += f' {arg}'
+    return value.tag  
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+
+@register.filter(is_safe=True)
 def label_with_classes(value, arg):
     return value.label_tag(attrs={'class': arg})
 

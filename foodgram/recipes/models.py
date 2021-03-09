@@ -57,7 +57,7 @@ class Recipe(models.Model):
                                related_name='recipes')
     image = models.ImageField(upload_to='images/', null=True, blank=True)
     slug = models.SlugField(max_length=100, unique=True)
-    tag = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag)
     time = models.PositiveSmallIntegerField()
 
     class Meta:

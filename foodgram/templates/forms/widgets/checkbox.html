@@ -1,0 +1,10 @@
+<div class="tags">
+    {% for group, options, index in widget.optgroups %}
+    {% for option in options %}
+    <div class="tags__item">
+        <input type="{{ option.type }}" name="{{ option.name }}"{% include 'forms/widgets/attrs.html' with widget=option %}>
+        <label for="{{ option.attrs.id }}" class="tags__label">{{ option.label }}</label>
+    </div>
+    {% endfor %}
+    {% endfor %}
+</div>

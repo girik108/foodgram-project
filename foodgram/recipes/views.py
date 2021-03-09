@@ -103,18 +103,21 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
     template_name = 'create/create.html'
     form_class = RecipeForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['tags'] = Tag.objects.all()
-        return context
 
     def post(self, request, *args, **kwargs):
         VALUES = {'name': 'nameIngredient',
                   'value': 'valueIngredient',
                   'units': 'unitsIngredient', }
+
         form = self.form_class(request.POST)
+        
         if form.is_valid():
-            keys = request.POST.keys()
+            recipe = form.save(commit=False) 
+            recipe.author = request.user
+            recipe.save()
+            for tag_id in form.cleaned_data['tags']:
+                recipe.tags.add(Tag.objects.get(id=tag_id))
+            '''keys = request.POST.keys()
             result = {}
             keys = [key for key in keys if key.startswith(VALUES['name'])]
             for key in keys:
@@ -122,9 +125,9 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
                 dct = {}
                 dct[name] = request.POST[key]
                 dct[VALUES[1]] = request.POST[VALUES[1] + '_' + num]
-                result[num] = dct
+                result[num] = dct'''
 
-            return JsonResponse(result)
+            return JsonResponse(form.cleaned_data)
 
         return JsonResponse(form.errors)
 

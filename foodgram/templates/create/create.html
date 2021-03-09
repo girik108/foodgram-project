@@ -22,14 +22,7 @@
         <div class="form__group">
             <p class="form__label">{{ form.tags.label }}</p>
             <div class="form__field-group">
-                <div class="tags">
-                    {% for tag in tags %}
-                    <div class="tags__item">
-                        <input type="checkbox" name="{{ tag.slug }}" id="id_{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}">
-                        <label for="id_{{ tag.slug }}" class="tags__label">{{ tag.name }}</label>
-                    </div>
-                    {% endfor %}
-                </div>
+                {{ form.tags }}
                 {% for error in form.tags.errors %}
                 <span class="form__error">{{ error|escape }}</span>
                 {% endfor %}

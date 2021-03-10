@@ -104,9 +104,6 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
     form_class = RecipeForm
 
     def post(self, request, *args, **kwargs):
-        VALUES = {'name': 'nameIngredient',
-                  'value': 'valueIngredient',
-                  'units': 'unitsIngredient', }
 
         form = self.form_class(request.POST)
 
@@ -114,8 +111,8 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
             recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.save()
-            for tag_id in form.cleaned_data['tags']:
-                recipe.tags.add(Tag.objects.get(id=tag_id))
+            recipe.tags.add(*form.cleaned_data['tags'])
+
             '''keys = request.POST.keys()
             result = {}
             keys = [key for key in keys if key.startswith(VALUES['name'])]
@@ -147,14 +144,25 @@ class RecipeUpdate(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         recipe = self.get_object()
+        ##TODO recipe.author != request.user
         form = self.form_class(request.POST or None,
                                files=request.FILES or None, instance=recipe)
 
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.save()
-            for tag_id in form.cleaned_data['tags']:
-                recipe.tags.add(Tag.objects.get(id=tag_id))
+            recipe.tags.clear()
+            recipe.tags.add(*form.cleaned_data['tags'])
+
+            ingredients = [ingr.id for ingr, count in form.cleaned_data['ingredient']]
+
+            recipe.ingredients.exclude(ingredient__in=ingredients).delete()
+
+            for ingr, count in form.cleaned_data['ingredient']:
+                RecipesIngredient.objects.update_or_create(
+                    ingredient=ingr, recipe=recipe, count=count)
+
+            return redirect('recipe', recipe.id)
 
         return render(request, self.template_name, {'form': form})
 

@@ -38,14 +38,10 @@ class Tag(models.Model):
     slug = models.SlugField(max_length=20, default='lunch')
 
     class Meta:
-        ordering = ['pk']
+        ordering = ['name']
 
     def __str__(self):
         return f'{self.name}'
-
-    @property
-    def translit(self):
-        return slugify(self.name, separator='__')
 
 
 class Recipe(models.Model):

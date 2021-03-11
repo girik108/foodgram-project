@@ -3,7 +3,6 @@
 {% block message %}Вы уверены, что хотите удалить "{{ object.recipe }}" из списка покупок?{% endblock %}
 {% block button %}
 <form method="post">{% csrf_token %}
-    <input class="button button_style_light-blue-outline" type="submit" value="Да">
+    <button class="button button_style_blue">Удалить</button> <a style="margin-left: 2.5em" href="{% url 'shoplist' %}" class="button button_style_light-blue-outline">Нет</a>
 </form>
-<button class="button button_style_blue" onclick="window.location.href = '{% url 'shoplist' %}';">Нет</button>
 {% endblock %}

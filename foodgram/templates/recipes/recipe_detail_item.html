@@ -48,6 +48,7 @@
                 <button class="button button_style_blue" name="purchases" data-out></span>Добавить в покупки</button>
                 {% endif %}
             </li>
+            {% if recipe.author != user %}
             <li class="single-card__item">
                 {% if recipe.author|is_subscribe:user %}
                 <button class="button button_style_light-blue" name="subscribe">Отписаться от автора</button>
@@ -55,6 +56,7 @@
                 <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
                 {% endif %}
             </li>
+            {% endif %}
         </ul>
         {% endif %}
         <div class="single-card__section">

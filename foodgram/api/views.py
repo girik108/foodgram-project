@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from recipes.models import Ingredient, Follow, Favorite, Recipe, ShoppingList
 from .serializers import IngredientSerializer
-
+from .utils import FollowError, FavoriteError
 
 User = get_user_model()
 
@@ -26,17 +26,19 @@ class IngredientView(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class FollowView(views.APIView):
+class FavoriteView(views.APIView):
     permission_classes = [IsAuthenticated]
-    request_model = User
-    arg_name = 'author'
-    operate_model = Follow
+    request_model = Recipe
+    operate_model = Favorite
+    arg_name = 'recipe'
 
     def custom_create_obj(self, pk):
         kwargs = {}
         kwargs['user'] = self.request.user
         kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
         
+        if kwargs[self.arg_name].author == kwargs['user']:
+            raise FavoriteError
         return self.operate_model(**kwargs)
 
     def custom_get_obj(self, pk):
@@ -63,12 +65,28 @@ class FollowView(views.APIView):
         return Response({'success': 'true'}, status=status.HTTP_200_OK)
 
 
-class FavoriteView(FollowView):
+class FollowView(FavoriteView):
     permission_classes = [IsAuthenticated]
-    request_model = Recipe
-    operate_model = Favorite
-    arg_name = 'recipe'
+    request_model = User
+    arg_name = 'author'
+    operate_model = Follow
+
+    def custom_create_obj(self, pk):
+        kwargs = {}
+        kwargs['user'] = self.request.user
+        kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
+        if kwargs['user'] == kwargs[self.arg_name]:
+            raise FollowError
+        
+        return self.operate_model(**kwargs)
 
 
 class ShoppingListView(FavoriteView):
     operate_model = ShoppingList
+
+    def custom_create_obj(self, pk):
+        kwargs = {}
+        kwargs['user'] = self.request.user
+        kwargs[self.arg_name] = self.request_model.objects.get(pk=int(pk))
+        
+        return self.operate_model(**kwargs)

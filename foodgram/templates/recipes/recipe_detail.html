@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
     <div class="card-list">
-    {% include "detail/item.html" with recipe=object %}
+    {% include "recipes/recipe_detail_item.html" with recipe=object %}
     </div>
 {% endblock %}
-{% block scripts %}{% include "detail/scripts.html" %}{% endblock %}
+{% block scripts %}{% include "recipes/js_recipe_detail.html" %}{% endblock %}

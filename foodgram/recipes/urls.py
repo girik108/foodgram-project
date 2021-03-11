@@ -10,7 +10,7 @@ urlpatterns = [
     path('shoplist/pdf/', views.ShopListPdf.as_view(), name='shoplistpdf'),
     path('shoplist/<int:pk>/delete/', views.ShopListDelete.as_view(), name='shoplist-delete'),
     path('recipe/<int:pk>/update/', views.RecipeUpdate.as_view(), name='recipe_update'),
-    path('recipe/<int:pk>/delete/', views.RecipeDelete.as_view(), name='recipe-delete'),
+    path('recipe/<int:pk>/delete/', views.RecipeDelete.as_view(), name='recipe_delete'),
     path('', views.RecipeList.as_view(), name='index'),
     path('recipe/<int:pk>/', views.RecipeDetail.as_view(), name='recipe'),
     path('<str:username>/favorites/',

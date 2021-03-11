@@ -22,13 +22,13 @@ from .forms import RecipeForm
 from .filters import RecipeFilter
 from .utils import create_pdf
 
+
 PAGINATE = 6
 User = get_user_model()
 
 
 class RecipeList(ListView):
     model = Recipe
-    template_name = 'main/index.html'
     paginate_by = PAGINATE
 
     def get_queryset(self):
@@ -40,7 +40,7 @@ class RecipeList(ListView):
 
 class AuthorRecipeList(ListView):
     model = Recipe
-    template_name = 'author/index.html'
+    template_name = 'recipes/author_recipe_list.html'
     paginate_by = PAGINATE
 
     def get_context_data(self, **kwargs):
@@ -88,19 +88,17 @@ class SubAuthorList(LoginRequiredMixin, ListView):
 
 class RecipeDetail(DetailView):
     model = Recipe
-    template_name = 'detail/index.html'
 
     def get_context_data(self, **kwargs):
         recipe = self.get_object()
         context = super().get_context_data(**kwargs)
-        context['ingredients'] = recipe.ingredients.all()
-        context['single'] = True
+        context['ingredients'] = recipe.ingredients.all().select_related(
+            'ingredient')
         return context
 
 
 class RecipeCreate(LoginRequiredMixin, CreateView):
     model = Recipe
-    template_name = 'create/create.html'
     form_class = RecipeForm
 
     def post(self, request, *args, **kwargs):
@@ -130,12 +128,12 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
 
 class RecipeUpdate(LoginRequiredMixin, UpdateView):
     model = Recipe
-    template_name = 'create/create.html'
     form_class = RecipeForm
 
     def get_context_data(self, **kwargs):
         recipe = self.get_object()
         context = super().get_context_data(**kwargs)
+        context['edit'] = True
         context['recipe_tags'] = list(
             recipe.tags.values_list('slug', flat=True))
         ing_lst = recipe.ingredients.all().prefetch_related('ingredient')
@@ -144,7 +142,7 @@ class RecipeUpdate(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         recipe = self.get_object()
-        ##TODO recipe.author != request.user
+        # TODO recipe.author != request.user
         form = self.form_class(request.POST or None,
                                files=request.FILES or None, instance=recipe)
 
@@ -154,7 +152,8 @@ class RecipeUpdate(LoginRequiredMixin, UpdateView):
             recipe.tags.clear()
             recipe.tags.add(*form.cleaned_data['tags'])
 
-            ingredients = [ingr.id for ingr, count in form.cleaned_data['ingredient']]
+            ingredients = [ingr.id for ingr,
+                           count in form.cleaned_data['ingredient']]
 
             recipe.ingredients.exclude(ingredient__in=ingredients).delete()
 
@@ -169,7 +168,7 @@ class RecipeUpdate(LoginRequiredMixin, UpdateView):
 
 class RecipeDelete(LoginRequiredMixin, DeleteView):
     model = Recipe
-    success_url = reverse_lazy('recipes')
+    success_url = reverse_lazy('index')
 
 
 class ShopList(LoginRequiredMixin, ListView):

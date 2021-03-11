@@ -9,7 +9,7 @@ class DimensionAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name')
+    list_display = ('pk', 'name', 'color', 'slug')
     search_fields = ('name',)
     empty_value_display = '-пусто-'
 

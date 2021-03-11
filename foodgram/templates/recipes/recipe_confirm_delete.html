@@ -1,0 +1,8 @@
+{% extends "custom.html" %}
+{% block title %}Подтвердите удаление{% endblock %}
+{% block message %}Вы уверены, что хотите удалить рецепт "{{ object.recipe }}"?{% endblock %}
+{% block button %}
+<form method="post">{% csrf_token %}
+    <button class="button button_style_blue">Удалить</button> <a style="margin-left: 2.5em" href="{% url 'index' %}" class="button button_style_light-blue-outline">Нет</a>
+</form>
+{% endblock %}

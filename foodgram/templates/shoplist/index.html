@@ -1,6 +1,6 @@
 {% extends "../base.html" %}
-{% block title %}Список покупок{% endblock %}
-{% block main_title %}Список покупок{% endblock %}
+{% block title %}Список покупок{% if not shoplists %} пуст{% endif %}{% endblock %}
+{% block main_title %}Список покупок{% if not shoplists %} пуст{% endif %}{% endblock %}
 {% block css %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'pages/shopList.css' %}">
@@ -12,7 +12,9 @@
         {% include 'shoplist/recipe.html' with recipe=shoplist.recipe shoplist=shoplist %}
         {% endfor %}
     </ul>
+    {% if shoplists %}
     <a href="{% url 'shoplistpdf' %}"><button class="button button_style_blue">Скачать список</button></a>
+    {% endif %}
 </div>
 {% endblock %}
 {% block scripts %}{% include "shoplist/scripts.html" %}{% endblock %}

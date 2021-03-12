@@ -3,10 +3,16 @@
         <div class="nav__container container">
             <ul class="nav__items list">
                 {% load custom_filters %}
-                {% if user.is_authenticated %}
-                <li class="nav__item {% if request.path|is_index %}nav__item_active{% endif %}">
+                {% if request.path|is_auth %}
+                <li class="nav__item nav__item_disabled">
                     <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
                 </li>
+                {% else %}
+                <li class="nav__item {% if request.path|is_index or detail %}nav__item_active{% endif %}">
+                    <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
                 <li class="nav__item{% if subs %} nav__item_active{% endif %}">
                     <a href="{% url 'subscription' user.username %}" class="nav__link link">Мои подписки</a>
                 </li>
@@ -17,16 +23,6 @@
                 <li class="nav__item"><a href="{% url 'shoplist' %}" class="nav__link link">Список покупок</a>
                     <span class="badge badge_style_blue nav__badge" id="counter">{{ user.purchases.count }}</span>
                 </li>
-                {% else %}
-                {% if request.path|is_auth %}
-                <li class="nav__item nav__item_disabled">
-                    <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
-                </li>
-                {% else %}
-                <li class="nav__item {% if request.path|is_index %}nav__item_active{% endif %}">
-                    <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
-                </li>
-                {% endif %}
                 {% endif %}
             </ul>
             <ul class="nav__items list">

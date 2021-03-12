@@ -50,7 +50,7 @@
             </li>
             {% if recipe.author != user %}
             <li class="single-card__item">
-                {% if recipe.author|is_subscribe:user %}
+                {% if user|is_subscribe:recipe.author %}
                 <button class="button button_style_light-blue" name="subscribe">Отписаться от автора</button>
                 {% else %}
                 <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>

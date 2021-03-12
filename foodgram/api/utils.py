@@ -17,12 +17,12 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     if isinstance(exc, IntegrityError) and not response:
-        response = Response({'success': 'false'}, status=status.HTTP_400_BAD_REQUEST)
+        response = Response({'success': 'false', 'IntegrityError': 'true'}, status=status.HTTP_400_BAD_REQUEST)
     elif isinstance(exc, ObjectDoesNotExist) and not response:
         response = Response({'success': 'false'}, status=status.HTTP_404_NOT_FOUND)
     elif isinstance(exc, FollowError) and not response:
-        response = Response({'success': 'false'}, status=status.HTTP_400_BAD_REQUEST)
+        response = Response({'success': 'false', 'FollowError': 'true'}, status=status.HTTP_400_BAD_REQUEST)
     elif isinstance(exc, FavoriteError) and not response:
-        response = Response({'success': 'false'}, status=status.HTTP_400_BAD_REQUEST)
+        response = Response({'success': 'false', 'FavoriteError': 'true'}, status=status.HTTP_400_BAD_REQUEST)
         
     return response

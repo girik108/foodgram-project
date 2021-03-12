@@ -4,7 +4,7 @@ from django.http import FileResponse, HttpResponse, JsonResponse
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.core.exceptions import PermissionDenied
 
@@ -25,6 +25,13 @@ from .utils import create_pdf
 
 PAGINATE = 6
 User = get_user_model()
+
+
+class LoginPermissionMixin(LoginRequiredMixin, PermissionRequiredMixin):
+    
+    def has_permission(self):
+        obj = self.get_object()
+        return self.request.user == obj.author
 
 
 class RecipeList(ListView):
@@ -94,6 +101,7 @@ class RecipeDetail(DetailView):
         context = super().get_context_data(**kwargs)
         context['ingredients'] = recipe.ingredients.all().select_related(
             'ingredient')
+        context['detail'] = True
         return context
 
 
@@ -126,7 +134,7 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
         return JsonResponse(form.errors)
 
 
-class RecipeUpdate(LoginRequiredMixin, UpdateView):
+class RecipeUpdate(LoginPermissionMixin, UpdateView):
     model = Recipe
     form_class = RecipeForm
 
@@ -142,7 +150,6 @@ class RecipeUpdate(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         recipe = self.get_object()
-        # TODO recipe.author != request.user
         form = self.form_class(request.POST or None,
                                files=request.FILES or None, instance=recipe)
 
@@ -166,7 +173,7 @@ class RecipeUpdate(LoginRequiredMixin, UpdateView):
         return render(request, self.template_name, {'form': form})
 
 
-class RecipeDelete(LoginRequiredMixin, DeleteView):
+class RecipeDelete(LoginPermissionMixin, DeleteView):
     model = Recipe
     success_url = reverse_lazy('index')
 
@@ -207,8 +214,10 @@ class ShopListPdf(LoginRequiredMixin, View):
 
 
 def page_not_found(request, exception):
-    return render(request, "misc/404.html", {"path": request.build_absolute_uri()}, status=404)
-
+    return render(request, 'misc/404.html', {'path': request.build_absolute_uri()}, status=404)
 
 def server_error(request):
-    return render(request, "misc/500.html", status=500)
+    return render(request, 'misc/500.html', status=500)
+
+def permission_denied(request, exception):
+    return render(request, 'misc/403.html', {'path': request.build_absolute_uri()}, status=403)

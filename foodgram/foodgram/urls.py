@@ -6,7 +6,9 @@ from django.conf.urls import handler404, handler500
 
  
 handler404 = 'recipes.views.page_not_found'
+handler403 = 'recipes.views.permission_denied'
 handler500 = 'recipes.views.server_error'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('users.urls')),

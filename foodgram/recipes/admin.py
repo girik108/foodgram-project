@@ -39,7 +39,7 @@ class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user', 'recipe')
 
 class ShoppingListAdmin(admin.ModelAdmin): 
-    list_display = ('pk', 'user', 'recipe')
+    list_display = ('pk', 'user', 'recipe', 'session_key')
 
 admin.site.register(models.Dimension, DimensionAdmin)
 admin.site.register(models.Ingredient, IngredientAdmin)

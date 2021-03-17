@@ -13,7 +13,7 @@ class SignUp(CreateView):
     template_name = 'registration/reg.html' 
 
 class UserLoginView(LoginView):
-    authentication_form = AuthForm 
+    authentication_form = AuthForm
 
 class PassChange(PasswordChangeView, LoginRequiredMixin):
     form_class = PassChangeForm

@@ -31,7 +31,7 @@ def create_pdf(ingredients):
             pos = 760
             count = 1
         pos -= STEP
-        string = f'{item.title.capitalize():<25}{item.summ:>10} {item.dimension}'
+        string = f'{num}){item.title.capitalize()} ({item.dimension}) — {item.summ}'
         p.drawString(INDENT, pos, string)
     p.showPage()
     p.save()

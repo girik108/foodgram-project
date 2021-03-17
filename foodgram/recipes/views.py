@@ -21,17 +21,12 @@ from .models import Dimension, Recipe, Ingredient, RecipesIngredient, Tag, Follo
 from .forms import RecipeForm
 from .filters import RecipeFilter
 from .utils import create_pdf
+from .permissions import LoginPermissionMixin, ShopListPermission
 
 
 PAGINATE = 6
 User = get_user_model()
 
-
-class LoginPermissionMixin(LoginRequiredMixin, PermissionRequiredMixin):
-    
-    def has_permission(self):
-        obj = self.get_object()
-        return self.request.user == obj.author
 
 
 class RecipeList(ListView):
@@ -111,7 +106,7 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
 
-        form = self.form_class(request.POST)
+        form = self.form_class(request.POST, files=request.FILES)
 
         if form.is_valid():
             recipe = form.save(commit=False)
@@ -119,19 +114,13 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
             recipe.save()
             recipe.tags.add(*form.cleaned_data['tags'])
 
-            '''keys = request.POST.keys()
-            result = {}
-            keys = [key for key in keys if key.startswith(VALUES['name'])]
-            for key in keys:
-                name, num = key.split('_')
-                dct = {}
-                dct[name] = request.POST[key]
-                dct[VALUES[1]] = request.POST[VALUES[1] + '_' + num]
-                result[num] = dct'''
+            for ingr, count in form.cleaned_data['ingredient']:
+                RecipesIngredient.objects.create(
+                    ingredient=ingr, recipe=recipe, count=count)
 
-            return JsonResponse(form.cleaned_data)
+            return redirect('recipe', recipe.id)
 
-        return JsonResponse(form.errors)
+        return render(request, self.template_name, {'form': form})
 
 
 class RecipeUpdate(LoginPermissionMixin, UpdateView):
@@ -178,7 +167,7 @@ class RecipeDelete(LoginPermissionMixin, DeleteView):
     success_url = reverse_lazy('index')
 
 
-class ShopList(LoginRequiredMixin, ListView):
+class ShopList(ListView):
     model = ShoppingList
     template_name = 'shoplist/index.html'
     context_object_name = 'shoplists'
@@ -189,25 +178,28 @@ class ShopList(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        return ShoppingList.objects.filter(user=self.request.user)
+        if self.request.user.is_authenticated:
+            return self.request.user.purchases.all()
+        session_key = self.request.session.session_key
+        return self.model.objects.filter(session_key=session_key)
 
 
-class ShopListDelete(LoginRequiredMixin, DeleteView):
+class ShopListDelete(ShopListPermission, DeleteView):
     model = ShoppingList
     success_url = reverse_lazy('shoplist')
     template_name = 'shoplist/confirm_delete.html'
 
-    def get_object(self, queryset=None):
-        shoplist = super(ShopListDelete, self).get_object()
-        if not shoplist.user == self.request.user:
-            raise PermissionDenied
-        return shoplist
 
-
-class ShopListPdf(LoginRequiredMixin, View):
+class ShopListPdf(View):
     def get(self, request, *args, **kwargs):
-        ingredients = Ingredient.objects.filter(
-            recipes__recipe__purchased__user=self.request.user).annotate(summ=Sum('recipes__count'))
+        kwargs = {}
+        if request.user.is_authenticated:
+            kwargs['recipes__recipe__purchased__user'] = self.request.user
+        else:
+            kwargs['recipes__recipe__purchased__session_key'] = self.request.session.session_key
+        
+        ingredients = Ingredient.objects.filter(**kwargs).annotate(summ=Sum('recipes__count'))
+        
         buffer = create_pdf(ingredients)
 
         return FileResponse(buffer, as_attachment=True, filename='shoplist.pdf')
@@ -216,8 +208,10 @@ class ShopListPdf(LoginRequiredMixin, View):
 def page_not_found(request, exception):
     return render(request, 'misc/404.html', {'path': request.build_absolute_uri()}, status=404)
 
+
 def server_error(request):
     return render(request, 'misc/500.html', status=500)
+
 
 def permission_denied(request, exception):
     return render(request, 'misc/403.html', {'path': request.build_absolute_uri()}, status=403)

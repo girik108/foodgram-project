@@ -2,9 +2,6 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from slugify import slugify
-
-CSS_COLORS = ('purple', 'green', 'orange')
 
 User = get_user_model()
 
@@ -31,7 +28,7 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    """Справочник тегов"""
+    CSS_COLORS = ('purple', 'green', 'orange')
     COLORS = [(color, color.title()) for color in CSS_COLORS]
     name = models.CharField(max_length=50, unique=True)
     color = models.CharField(max_length=10, choices=COLORS, default='green')
@@ -51,8 +48,7 @@ class Recipe(models.Model):
         'date published', auto_now_add=True, db_index=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes')
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
-    slug = models.SlugField(max_length=100, unique=True, )
+    image = models.ImageField(upload_to='images/')
     tags = models.ManyToManyField(Tag)
     time = models.PositiveSmallIntegerField()
 
@@ -89,13 +85,16 @@ class RecipesIngredient(models.Model):
 
 class ShoppingList(models.Model):
     """Класс список покупок"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             related_name='purchases')
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, blank=True, null=True,
+                                related_name='purchases', on_delete=models.CASCADE)
+    session_key = models.CharField(max_length=40)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                related_name='purchased')
+    
 
     class Meta:
-        unique_together = ('recipe', 'user')
+        unique_together = ('recipe', 'user')  # , 'session_key')
 
     def __str__(self):
         return f'{self.user} -> {self.recipe}'

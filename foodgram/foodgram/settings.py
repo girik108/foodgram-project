@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware', 
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
@@ -141,6 +142,8 @@ USE_L10N = True
 USE_TZ = True
 
 AUTH_USER_MODEL = 'users.User' 
+
+SESSION_SAVE_EVERY_REQUEST = True
 
 
 # Static files (CSS, JavaScript, Images)

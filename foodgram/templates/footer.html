@@ -1,3 +1,5 @@
+{% load cache %}
+{% cache 3600 footer %}
 <footer class="footer">
     <div class="footer__container container">
         <a href="{% url 'index' %}" class="footer__brand link">Продуктовый помощник</a>
@@ -7,3 +9,4 @@
         </ul>
     </div>
 </footer>
+{% endcache %}

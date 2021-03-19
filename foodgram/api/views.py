@@ -70,7 +70,7 @@ class FollowView(FavoriteView):
     operate_model = Follow
 
     def custom_create_obj(self, pk):
-        kwargs = self.get_kwargs()
+        kwargs = self.get_kwargs(pk)
         if kwargs['user'] == kwargs[self.arg_name]:
             raise FollowError
 

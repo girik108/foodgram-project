@@ -3,6 +3,8 @@ from django.db.models import Sum
 from django.http import FileResponse, HttpResponse, JsonResponse
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
@@ -11,7 +13,6 @@ from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.conf import settings
 
-from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views import View
@@ -27,8 +28,7 @@ from .permissions import LoginPermissionMixin, ShopListPermission
 PAGINATE = 6
 User = get_user_model()
 
-
-
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class RecipeList(ListView):
     model = Recipe
     paginate_by = PAGINATE
@@ -69,8 +69,10 @@ class FavoriteRecipeList(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        return Recipe.objects.filter(
+        qs = self.model.objects.filter(
             liked__user=self.request.user).prefetch_related('tags', 'author')
+        recipe_filtered = RecipeFilter(self.request.GET, queryset=qs)
+        return recipe_filtered.qs
 
 
 class SubAuthorList(LoginRequiredMixin, ListView):
@@ -197,9 +199,10 @@ class ShopListPdf(View):
             kwargs['recipes__recipe__purchased__user'] = self.request.user
         else:
             kwargs['recipes__recipe__purchased__session_key'] = self.request.session.session_key
-        
-        ingredients = Ingredient.objects.filter(**kwargs).annotate(summ=Sum('recipes__count'))
-        
+
+        ingredients = Ingredient.objects.filter(
+            **kwargs).annotate(summ=Sum('recipes__count'))
+
         buffer = create_pdf(ingredients)
 
         return FileResponse(buffer, as_attachment=True, filename='shoplist.pdf')

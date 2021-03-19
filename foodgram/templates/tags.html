@@ -1,4 +1,6 @@
 {# tags list complete #}
+{% load cache %}
+{% cache 300 sidebar %}
 <ul class="tags">
     {% for tag in tag_list %}
     <li class="tags__item">
@@ -15,3 +17,4 @@
     </li>
     {% endfor %}
 </ul>
+{% endcache %}

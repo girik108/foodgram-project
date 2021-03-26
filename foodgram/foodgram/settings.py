@@ -27,7 +27,7 @@ SECRET_KEY = 'b7g2uqu=41zx8&$5$1l0msd!%k)891rr@=do-r@i5lo2z44kbn'
 DEBUG = True
 #DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1',]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'testserver',] 
 
 
 # Application definition
@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.forms',
     'rest_framework',
-    #'rest_framework.authtoken',
     'sorl.thumbnail',
     'django_filters',
 ]

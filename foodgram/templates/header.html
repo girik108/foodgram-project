@@ -11,16 +11,16 @@
                     <a href="{% url 'shoplist' %}" class="nav__link link">Список покупок</a>
                 </li>
                 {% else %}
-                <li class="nav__item {% if request.path|is_index or detail %}nav__item_active{% endif %}">
+                <li class="nav__item {% if request.path|is_index or detail or author_index %}nav__item_active{% endif %}">
                     <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
                 </li>
                 {% if user.is_authenticated %}
                 <li class="nav__item{% if subs %} nav__item_active{% endif %}">
-                    <a href="{% url 'subscription' user.username %}" class="nav__link link">Мои подписки</a>
+                    <a href="{% url 'subscription' %}" class="nav__link link">Мои подписки</a>
                 </li>
                 <li class="nav__item"><a href="{% url 'new_recipe' %}" class="nav__link link">Создать рецепт</a></li>
                 <li class="nav__item{% if favorite %} nav__item_active{% endif %}">
-                    <a href="{% url 'favorites' user.username %}" class="nav__link link">Избранное</a>
+                    <a href="{% url 'favorites' %}" class="nav__link link">Избранное</a>
                 </li>
                 {% endif %}
                 <li class="nav__item{% if shoplist %} nav__item_active{% endif %}">

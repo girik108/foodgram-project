@@ -48,6 +48,7 @@ class AuthorRecipeList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['author'] = self.author
+        context['author_index'] = True
         return context
 
     def get_queryset(self):

@@ -19,9 +19,7 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         exclude = ('pk', 'author', 'tags')
-        labels = {'name': ('Название рецепта'),
-                  'description': ('Описание'), 'image': ('Загрузить фото'),
-                  'time': ('Время приготовления')}
+        labels = {'image': ('Загрузить фото'),}
 
 
     def clean_tags(self):

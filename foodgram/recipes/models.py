@@ -43,14 +43,14 @@ class Tag(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название рецепта')
-    description = models.TextField()
+    description = models.TextField(verbose_name='Описание')
     pub_date = models.DateTimeField(
         'date published', auto_now_add=True, db_index=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes')
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/', verbose_name='Загрузить фото')
     tags = models.ManyToManyField(Tag)
-    time = models.PositiveSmallIntegerField()
+    time = models.PositiveSmallIntegerField(verbose_name='Время приготовления')
 
     class Meta:
         ordering = ['-pub_date']

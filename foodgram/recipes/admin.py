@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from recipes import models
 
+
 class DimensionAdmin(admin.ModelAdmin):
     list_display = ('pk', 'abbr')
     search_fields = ('title', 'abbr')
@@ -38,8 +39,10 @@ class FollowAdmin(admin.ModelAdmin):
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user', 'recipe')
 
-class ShoppingListAdmin(admin.ModelAdmin): 
+
+class ShoppingListAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user', 'recipe', 'session_key')
+
 
 admin.site.register(models.Dimension, DimensionAdmin)
 admin.site.register(models.Ingredient, IngredientAdmin)

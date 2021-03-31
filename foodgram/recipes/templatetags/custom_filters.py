@@ -1,7 +1,7 @@
 from django import template
 from django.template.defaultfilters import stringfilter
 
-from recipes.models import Favorite, ShoppingList
+from recipes.models import ShoppingList
 
 
 register = template.Library()
@@ -65,7 +65,8 @@ def is_purch(recipe, request):
         return recipe.is_purch(request.user)
 
     session_key = request.session.session_key
-    return ShoppingList.objects.filter(recipe=recipe, session_key=session_key).exists()
+    return ShoppingList.objects.filter(recipe=recipe,
+                                       session_key=session_key).exists()
 
 
 @register.filter

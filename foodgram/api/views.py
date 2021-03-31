@@ -50,7 +50,9 @@ class FavoriteView(views.APIView):
     def post(self, request):
         pk = request.data.get('id')
         if not (pk or pk.isdigit()):
-            return Response({'success': 'false'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'success': 'false'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
         instance = self.custom_create_obj(pk)
         instance.save()
 
@@ -83,7 +85,11 @@ class ShoppingListView(FavoriteView):
 
     def get_kwargs(self, pk):
         kwargs = super().get_kwargs(pk)
-        kwargs['user'] = kwargs['user'] if kwargs['user'].is_authenticated else None
+        if kwargs['user'].is_authenticated:
+            return kwargs
+
+        kwargs['user'] = None
+
         if not self.request.session.session_key:
             self.request.session.save()
         kwargs['session_key'] = self.request.session.session_key

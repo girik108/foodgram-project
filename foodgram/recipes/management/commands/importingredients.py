@@ -20,16 +20,16 @@ class Command(BaseCommand):
 def import_all():
     Ingredient.objects.all().delete()
     Dimension.objects.all().delete()
-    
+
     source = os.path.join(IMPORT_DIR, 'ingredients.csv')
     with open(source, encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile, quotechar='"')
         for row in reader:
             abbr = row.get('dimension')
-            abbr = abbr if (abbr and abbr != ' ') else ''    
+            abbr = abbr if (abbr and abbr != ' ') else ''
             dimension, created = Dimension.objects.get_or_create(abbr=abbr)
-            ingredient = Ingredient(title=row.get('ingredient'), dimension=dimension)
+            ingredient = Ingredient(title=row.get(
+                'ingredient'), dimension=dimension)
             ingredient.save()
 
     return 'Ingredients and Units imported successfully'
-

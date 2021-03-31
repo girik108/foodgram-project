@@ -7,8 +7,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 from django.conf import settings
 
-    
-def create_pdf(ingredients): 
+
+def create_pdf(ingredients):
     STATIC_DIR = settings.STATIC_ROOT
     INDENT = 50
     STEP = 25
@@ -29,9 +29,9 @@ def create_pdf(ingredients):
             p.showPage()
             p.setFont('LiberationMono', 20)
             pos = 760
-            count = 1
         pos -= STEP
-        string = f'{num}){item.title.capitalize()} ({item.dimension}) — {item.summ}'
+        string = f'{num}){item.title.capitalize()} ' \
+                 f'({item.dimension}) — {item.summ}'
         p.drawString(INDENT, pos, string)
     p.showPage()
     p.save()

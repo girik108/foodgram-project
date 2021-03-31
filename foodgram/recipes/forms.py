@@ -19,8 +19,7 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         exclude = ('pk', 'author', 'tags')
-        labels = {'image': ('Загрузить фото'),}
-
+        labels = {'image': ('Загрузить фото'), }
 
     def clean_tags(self):
         tags_all = Tag.objects.all()
@@ -31,7 +30,6 @@ class RecipeForm(forms.ModelForm):
             raise forms.ValidationError('Необходимо отметить хотя бы один тег')
 
         return data
-
 
     def clean_ingredient(self):
         VALUES = {'name': 'nameIngredient',

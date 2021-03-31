@@ -1,8 +1,7 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
 from .views import FavoriteView, ShoppingListView, FollowView, IngredientView
- 
+
 
 urlpatterns = [
     path('v1/favorites/', FavoriteView.as_view()),

@@ -1,24 +1,15 @@
 from django.db.models import Sum
-
-from django.http import FileResponse, HttpResponse, JsonResponse
-
+from django.http import FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.core.paginator import Paginator
-from django.core.exceptions import PermissionDenied
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.conf import settings
-
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views import View
 
 
-from .models import Dimension, Recipe, Ingredient, RecipesIngredient, Tag, Follow, ShoppingList
+from .models import Recipe, Ingredient, RecipesIngredient, ShoppingList
 from .forms import RecipeForm
 from .filters import RecipeFilter
 from .utils import create_pdf
@@ -28,7 +19,7 @@ from .permissions import LoginPermissionMixin, ShopListPermission
 PAGINATE = 6
 User = get_user_model()
 
-@method_decorator(cache_page(60 * 5), name='dispatch')
+
 class RecipeList(ListView):
     model = Recipe
     paginate_by = PAGINATE
@@ -87,7 +78,6 @@ class SubAuthorList(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        user = self.request.user
         return User.objects.filter(following__user=self.request.user)
 
 
@@ -199,18 +189,21 @@ class ShopListPdf(View):
         if request.user.is_authenticated:
             kwargs['recipes__recipe__purchased__user'] = self.request.user
         else:
-            kwargs['recipes__recipe__purchased__session_key'] = self.request.session.session_key
+            session_key = self.request.session.session_key
+            kwargs['recipes__recipe__purchased__session_key'] = session_key
 
         ingredients = Ingredient.objects.filter(
             **kwargs).annotate(summ=Sum('recipes__count'))
 
         buffer = create_pdf(ingredients)
 
-        return FileResponse(buffer, as_attachment=True, filename='shoplist.pdf')
+        return FileResponse(buffer, as_attachment=True,
+                            filename='shoplist.pdf')
 
 
 def page_not_found(request, exception):
-    return render(request, 'misc/404.html', {'path': request.build_absolute_uri()}, status=404)
+    return render(request, 'misc/404.html',
+                  {'path': request.build_absolute_uri()}, status=404)
 
 
 def server_error(request):
@@ -218,4 +211,5 @@ def server_error(request):
 
 
 def permission_denied(request, exception):
-    return render(request, 'misc/403.html', {'path': request.build_absolute_uri()}, status=403)
+    return render(request, 'misc/403.html',
+                  {'path': request.build_absolute_uri()}, status=403)

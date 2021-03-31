@@ -2,9 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.conf.urls import handler404, handler500 
 
- 
+
 handler404 = 'recipes.views.page_not_found'
 handler403 = 'recipes.views.permission_denied'
 handler500 = 'recipes.views.server_error'
@@ -17,7 +16,6 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('', include('recipes.urls')),
 ]
-
 
 
 if settings.DEBUG:

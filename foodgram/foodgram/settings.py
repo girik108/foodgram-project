@@ -13,6 +13,8 @@ import os
 
 from pathlib import Path
 
+from django.core.management.utils import get_random_secret_key
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,13 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b7g2uqu=41zx8&$5$1l0msd!%k)891rr@=do-r@i5lo2z44kbn'
-
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    SECRET_KEY = get_random_secret_key()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 #DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'testserver',] 
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'testserver', 'web']
 
 
 # Application definition
@@ -56,7 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware', 
+    'django.contrib.sessions.middleware.SessionMiddleware',
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
@@ -102,7 +105,6 @@ CACHES = {
 }
 
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -123,7 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER':'api.utils.custom_exception_handler',
+    'EXCEPTION_HANDLER': 'api.utils.custom_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
     ]
@@ -142,7 +144,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = 'users.User' 
+AUTH_USER_MODEL = 'users.User'
 
 SESSION_SAVE_EVERY_REQUEST = True
 
@@ -152,7 +154,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 
 # задаём произвольный URL, который будет использоваться для запросов к статическим файлам
-STATIC_URL = '/static/' 
+STATIC_URL = '/static/'
 # теперь логотип можно будет запросить по адресу sitename.ex**/static/**images/logo.png
 STATICFILES_DIRS = ('data/',)
 # задаём адрес директории, куда командой *collectstatic* будет собрана вся статика
@@ -161,12 +163,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_URL = '/auth/login/' 
+LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'index'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-#EMAIL_FILE_PATH = '/tmp/app-messages' 
+#EMAIL_FILE_PATH = '/tmp/app-messages'
 
 if DEBUG:
     import mimetypes

@@ -27,7 +27,7 @@ jobs:
     - name: Test with Django test runner
       run: python3 foodgram/manage.py test -v 2
       
-deploy:
+  deploy:
     name: Deploy YaMDB to production
     runs-on: ubuntu-latest
     needs: build

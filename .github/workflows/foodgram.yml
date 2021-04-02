@@ -30,6 +30,7 @@ jobs:
   deploy:
     name: Deploy YaMDB to production
     runs-on: ubuntu-latest
+    needs: tests
     steps:
       - uses: actions/checkout@v2
       - name: Copying files to server

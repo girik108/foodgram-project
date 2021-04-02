@@ -1,1 +1,35 @@
-##TEST
+version: '3.7'
+
+services:
+  web:
+    image: girik108/foodgram
+    env_file:
+     - .web.env
+     - .db.env
+    volumes:
+      - ./fixtures.json:/home/worker/fixtures.json
+      - static_volume:/home/worker/static/
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    env_file: 
+      - .db.env
+    environment:
+      - LANG:'ru_RU.UTF-8'
+      - LANGUAGE:'ru_RU.UTF-8'
+      - LC_ALL:'ru_RU.UTF-8'
+    volumes:
+      - ./postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
+      - db-data:/var/lib/postgresql/data
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/var/foodgram/static/
+    ports:
+    - 80:80
+    depends_on:
+    - web
+volumes:
+  static_volume:
+  db-data:

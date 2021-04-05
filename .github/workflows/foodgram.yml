@@ -45,7 +45,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./foodgram
-          file: ./Dockerfile
+          file: Dockerfile
           push: true
           tags: girik108/foodgram:latest
           no-cache: true

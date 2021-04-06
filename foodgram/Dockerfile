@@ -16,7 +16,7 @@ USER worker
 WORKDIR /home/worker
 
 # copy project
-COPY --chown=worker:worker . .
+COPY --chown=worker:worker foodgram/* .
 
 # run entrypoint
 ENTRYPOINT ["/home/worker/entrypoint.sh"]

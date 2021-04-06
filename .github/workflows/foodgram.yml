@@ -44,8 +44,7 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
-          context: ./foodgram
-          file: Dockerfile
+          file: ./foodgram/Dockerfile
           push: true
           tags: girik108/foodgram:latest
           no-cache: true

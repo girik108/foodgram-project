@@ -16,7 +16,7 @@ fi
 #Collect static and make migrations
 python3 manage.py flush --noinput
 python3 manage.py collectstatic --noinput
-python3 manage.py makemigrations
+#python3 manage.py makemigrations
 python3 manage.py migrate
 
 #Load DUMP file
@@ -33,6 +33,7 @@ if [ "$DJANGO_SUPERUSER_EMAIL" ]
 then
     python manage.py createsuperuser \
         --noinput \
+        --username $DJANGO_SU_USERNAME \
         --email $DJANGO_SUPERUSER_EMAIL
 fi
 

@@ -20,7 +20,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install flake8
-        pip install -r requirements.txt
+        pip install -r foodgram/requirements.txt
     - name: Lint with flake8
       run: flake8 --exclude=migrations,tests,settings.py foodgram/
 

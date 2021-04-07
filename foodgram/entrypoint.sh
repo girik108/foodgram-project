@@ -16,7 +16,6 @@ fi
 #Collect static and make migrations
 python3 manage.py flush --noinput
 python3 manage.py collectstatic --noinput
-#python3 manage.py makemigrations
 python3 manage.py migrate
 
 #Load DUMP file
@@ -37,8 +36,7 @@ then
         --email $DJANGO_SUPERUSER_EMAIL
 fi
 
-
 #RUN Gunicorn
-gunicorn --bind 0.0.0.0:8000 api_yamdb.wsgi
+gunicorn --bind 0.0.0.0:8000 foodgram.wsgi
 
 exec "$@"

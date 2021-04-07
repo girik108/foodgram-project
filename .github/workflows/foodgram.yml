@@ -76,6 +76,7 @@ jobs:
             docker-compose down
             cp -fr tmp/* .
             echo -e "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .web.env
+            echo -e "DJANGO_SU_USERNAME=${{ secrets.DJANGO_SU_USERNAME }}" >> .web.env
             echo -e "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .web.env
             echo -e "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .web.env
             echo -e "DJANGO_FLUSH_DB=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .web.env

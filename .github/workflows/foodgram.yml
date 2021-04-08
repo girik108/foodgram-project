@@ -79,6 +79,8 @@ jobs:
             echo -e "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .web.env
             echo -e "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .web.env
             echo -e "DJANGO_FLUSH_DB=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .web.env
+            echo -e "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .web.env
+            echo -e "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .web.env
             echo -e "${{ secrets.ENV_DB }}" > .db.env
             docker pull girik108/foodgram:latest
             docker-compose up --build -d

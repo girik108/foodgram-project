@@ -17,6 +17,7 @@ fi
 python3 manage.py flush --noinput
 python3 manage.py collectstatic --noinput
 python3 manage.py migrate
+python3 manage.py importingredients
 
 #Load DUMP file
 DUMP_FILE="fixtures.json"

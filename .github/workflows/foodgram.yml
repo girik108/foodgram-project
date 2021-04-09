@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DEBUG: True
+      DATABASE_URL: sqlite:///db.sqlite3
       SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
 
@@ -83,7 +84,7 @@ jobs:
             echo -e "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .web.env
             echo -e "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .web.env
             echo -e "${{ secrets.ENV_DB }}" > .db.env
-            
+
             docker pull girik108/foodgram:latest
             docker-compose up --build -d
   

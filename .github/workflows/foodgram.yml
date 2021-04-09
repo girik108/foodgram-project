@@ -90,7 +90,7 @@ jobs:
             echo -e "SQL_USER=${{ secrets.SQL_USER }}" >> .db.env
             echo -e "SQL_PASSWORD=${{ secrets.SQL_PASSWORD }}" >> .db.env
             echo -e "SQL_HOST=${{ secrets.SQL_HOST }}" >> .db.env
-            echo -e "SQL_PORT=${{ secrets.SQL_HOST }}" >> .db.env
+            echo -e "SQL_PORT=${{ secrets.SQL_PORT }}" >> .db.env
             docker pull girik108/foodgram:latest
             docker-compose up --build -d
   

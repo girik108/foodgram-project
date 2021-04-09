@@ -83,7 +83,7 @@ jobs:
             echo -e "DJANGO_FLUSH_DB=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .web.env
             echo -e "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .web.env
             echo -e "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .web.env
-            echo -e "DATABASE_URL=psql://${{ secrets.SQL_USER }}:${{ secrets.SQL_PASSWORD }}@${{ secrets.SQL_HOST }}:${{ secrets.SQL_PORT }}/${{ secrets.SQL_DATABASE }} >> .web.env
+            echo -e "DATABASE_URL=psql://${{ secrets.SQL_USER }}:${{ secrets.SQL_PASSWORD }}@${{ secrets.SQL_HOST }}:${{ secrets.SQL_PORT }}/${{ secrets.SQL_DATABASE }}" >> .web.env
             echo -e "DATABASE=${{ secrets.DATABASE }}" > .db.env
             echo -e "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .db.env
             echo -e "SQL_DATABASE=${{ secrets.SQL_DATABASE }}" >> .db.env

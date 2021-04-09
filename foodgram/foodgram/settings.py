@@ -15,26 +15,28 @@ from pathlib import Path
 
 from django.core.management.utils import get_random_secret_key
 
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = os.getenv('DEBUG')
+# reading .env file
+environ.Env.read_env()
 
-if DEBUG:
-    from dotenv import load_dotenv
-
-    load_dotenv()
+# False if not in os.environ
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env('DEBUG')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
-if not SECRET_KEY:
-    SECRET_KEY = get_random_secret_key()
-# SECURITY WARNING: don't run with debug turned on in production!
-
+SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'testserver', 'web']
 
@@ -96,25 +98,10 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES_SQLITE3 = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
-DATABASES_POSTGRESQL = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('SQL_DATABASE'),
-        'USER': os.environ.get('SQL_USER'),
-        'PASSWORD': os.environ.get('SQL_PASSWORD'),
-        'HOST': os.environ.get('SQL_HOST'),
-        'PORT': os.environ.get('SQL_PORT'),
-    }
+DATABASES = {
+    'default': env.db(),
 }
-
-DATABASES = DATABASES_SQLITE3 if DEBUG else DATABASES_POSTGRESQL
 
 CACHES = {
     'default': {
@@ -184,14 +171,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'index'
 
+
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.mail.ru'
     EMAIL_PORT = 2525
-    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
     EMAIL_USE_TLS = True
     SERVER_EMAIL = EMAIL_HOST_USER
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

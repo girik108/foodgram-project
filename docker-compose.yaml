@@ -9,6 +9,7 @@ services:
     volumes:
       - ./fixtures.json:/app/fixtures.json
       - static_volume:/app/static/
+      - media_volume:/app/media/
     depends_on:
       - db
   db:
@@ -26,6 +27,7 @@ services:
     build: ./nginx
     volumes:
       - static_volume:/var/foodgram/static/
+      - media_volume:/var/foodgram/media/
     ports:
     - 80:80
     depends_on:
@@ -33,3 +35,4 @@ services:
 volumes:
   static_volume:
   db-data:
+  media_volume:

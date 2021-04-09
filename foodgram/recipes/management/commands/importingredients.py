@@ -32,4 +32,4 @@ def import_all():
                 'ingredient'), dimension=dimension)
             ingredient.save()
 
-    return 'Ingredients and Units imported successfully'
+    return 'Ingredients and Dimensions imported successfully'

@@ -18,7 +18,7 @@ class Dimension(models.Model):
 
 class Ingredient(models.Model):
     """Класс Ингредиентов"""
-    title = models.CharField(max_length=50, verbose_name='Наименование')
+    title = models.CharField(max_length=100, verbose_name='Наименование')
     dimension = models.ForeignKey(Dimension,
                                   on_delete=models.CASCADE,
                                   verbose_name='Единица измерения',

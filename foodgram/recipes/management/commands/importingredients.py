@@ -3,7 +3,7 @@ import os.path
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from recipes.models import Ingredient, Dimension
+from recipes.models import Ingredient, Dimension, Tag
 
 
 APP_DIR = settings.BASE_DIR
@@ -15,6 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self.stdout.write(import_all())
+        self.stdout.write(create_tags())
 
 
 def import_all():
@@ -33,3 +34,14 @@ def import_all():
             ingredient.save()
 
     return 'Ingredients and Dimensions imported successfully'
+
+def create_tags():
+    items = [('breakfast', 'orange', 'Завтрак'),
+            ('lunch', 'green', 'Обед'),
+            ('snack', 'orange', 'Перекус'),
+            ('dinner', 'purple', 'Ужин'),]
+
+    tags = [Tag(slug=item[0], color=item[1], name=item[2]) for item in items]
+    Tags.objects.bulk_create(tags)
+
+    return 'Tags created'

@@ -13,18 +13,27 @@ then
     echo "PostgreSQL started"
 fi
 
-#Flush DB. Collect static and migrate
-python3 manage.py flush --noinput
+#Flush DB
+echo "Check FLUSH DB"
+if [ "$DJANGO_FLUSH_DB" ]
+then
+    python3 manage.py flush --noinput
+    echo "DB if empty"
+fi
+
 python3 manage.py collectstatic --noinput
 python3 manage.py migrate
-#python3 manage.py importingredients
 
-#Load DUMP file
+#Load DUMP file of import
 DUMP_FILE="fixtures.json"
 
-if test -f "$DUMP_FILE"; then
+if test -f "$DUMP_FILE"; 
+then
     echo "Load data"
     python3 manage.py loaddata fixtures.json
+else
+    echo "Import ingredients"
+    python3 manage.py importingredients
 fi
 
 #Create super user if env set

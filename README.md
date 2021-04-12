@@ -1,4 +1,5 @@
-![foodgram-project_workflow](https://github.com/girik108/foodgram-project/workflows/foodgram/badge.svg)
+![foodgram-project_workflow](https://github.com/girik108/foodgram-project/actions/workflows/foodgram.yml/badge.svg)
+
 
 # foodgram-project
 

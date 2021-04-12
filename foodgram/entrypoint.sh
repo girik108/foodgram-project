@@ -13,7 +13,7 @@ then
     echo "PostgreSQL started"
 fi
 
-#Collect static and make migrations
+#Flush DB. Collect static and migrate
 python3 manage.py flush --noinput
 python3 manage.py collectstatic --noinput
 python3 manage.py migrate
@@ -29,11 +29,11 @@ fi
 
 #Create super user if env set
 echo "Check SUPERUSER"
-if [ "$DJANGO_SUPERUSER_EMAIL" ]
+if [ "$DJANGO_SUPERUSER_USERNAME" ]
 then
     python manage.py createsuperuser \
         --noinput \
-        --username $DJANGO_SU_USERNAME \
+        --username $DJANGO_SUPERUSER_USERNAME \
         --email $DJANGO_SUPERUSER_EMAIL
 fi
 

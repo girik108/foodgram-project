@@ -4,6 +4,8 @@
 # Сайт «Продуктовый помощник».
 Это онлайн-сервис, где пользователи смогут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 
+Cоздан в рамках дипломного проэкта учебного курса Яндекс.Практикум.
+
 ## Стек технологий
 - проект написан на Python с использованием Django и Django REST Framework
 - библиотека sorl-thumbnail - работа с картинками
@@ -27,10 +29,16 @@ git clone https://github.com/girik108/foodgram-project.git
  - SQL_HOST=db
  - SQL_PORT=5432
  Также создайте файл .web.env, в котором пропишите следующие переменные окружения :
- - SECRET_KEY=1q2w3e4r5t6y7u8i9o0p 
+ - SECRET_KEY=1q2w3e4r5t6y7u8i9o0p
+ - EMAIL_HOST = mail.example.com
+ - EMAIL_PORT = 25
+ - EMAIL_HOST_USER = foodgram@example.com
+ - EMAIL_HOST_PASSWORD = EmailStrongPass123=)
+
  Чтобы очистить БД перед запуском создайте переменную 
  - DJANGO_FLUSH_DB=True
- Чтобы создать администратора добавьте следующие переменые окружения 
+ Чтобы создать администратора добавьте следующие переменые окружения
+ - DJANGO_SUPERUSER_USERNAME= superadmin
  - DJANGO_SUPERUSER_EMAIL=admin@example.com
  - DJANGO_SUPERUSER_PASSWORD=SUPERpass
  Если иммется дамп БД. То переименуйте его в fixtures.json и положите в папку с docker-compose.yaml

@@ -22,10 +22,10 @@ git clone https://github.com/girik108/foodgram-project.git
 ```
 2) В директории проекта создайте файл .db.env, в котором пропишите следующие переменные окружения :
  - POSTGRES_PASSWORD=DBpassword
- - SQL_ENGINE=django.db.backends.postgresql
- - SQL_DATABASE=yamdb
- - SQL_USER=yamdb_user
- - SQL_PASSWORD=YAMDBpassword
+ - DATABASE = postgres
+ - SQL_DATABASE=foodgram
+ - SQL_USER=foodgram_user
+ - SQL_PASSWORD=FooDGRAMpassword
  - SQL_HOST=db
  - SQL_PORT=5432
  Также создайте файл .web.env, в котором пропишите следующие переменные окружения :

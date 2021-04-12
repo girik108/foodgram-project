@@ -35,11 +35,12 @@ def import_all():
 
     return 'Ingredients and Dimensions imported successfully'
 
+
 def create_tags():
     items = [('breakfast', 'orange', 'Завтрак'),
-            ('lunch', 'green', 'Обед'),
-            ('snack', 'orange', 'Перекус'),
-            ('dinner', 'purple', 'Ужин'),]
+             ('lunch', 'green', 'Обед'),
+             ('snack', 'orange', 'Перекус'),
+             ('dinner', 'purple', 'Ужин'), ]
 
     tags = [Tag(slug=item[0], color=item[1], name=item[2]) for item in items]
     Tags.objects.bulk_create(tags)

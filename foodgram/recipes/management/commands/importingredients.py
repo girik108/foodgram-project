@@ -43,6 +43,6 @@ def create_tags():
              ('dinner', 'purple', 'Ужин'), ]
 
     tags = [Tag(slug=item[0], color=item[1], name=item[2]) for item in items]
-    Tags.objects.bulk_create(tags)
+    Tag.objects.bulk_create(tags)
 
     return 'Tags created'

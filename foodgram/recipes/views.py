@@ -1,19 +1,18 @@
-from django.db.models import Sum
-from django.http import FileResponse
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views import View
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-
-from .models import Recipe, Ingredient, RecipesIngredient, ShoppingList
-from .forms import RecipeForm
 from .filters import RecipeFilter
-from .utils import create_pdf
+from .forms import RecipeForm
+from .models import Ingredient, Recipe, ShoppingList
 from .permissions import LoginPermissionMixin, ShopListPermission
+from .utils import create_pdf
 
 
 PAGINATE = 6
@@ -98,19 +97,9 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
     form_class = RecipeForm
 
     def post(self, request, *args, **kwargs):
-
         form = self.form_class(request.POST, files=request.FILES)
-
-        if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.author = request.user
-            recipe.save()
-            recipe.tags.add(*form.cleaned_data['tags'])
-
-            for ingr, count in form.cleaned_data['ingredient']:
-                RecipesIngredient.objects.create(
-                    ingredient=ingr, recipe=recipe, count=count)
-
+        recipe = form.custom_save(author=request.user)
+        if recipe:
             return redirect('recipe', recipe.id)
 
         return render(request, self.template_name, {'form': form})
@@ -134,22 +123,9 @@ class RecipeUpdate(LoginPermissionMixin, UpdateView):
         recipe = self.get_object()
         form = self.form_class(request.POST or None,
                                files=request.FILES or None, instance=recipe)
+        recipe = form.custom_save(author=request.user, update=True)
 
-        if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.save()
-            recipe.tags.clear()
-            recipe.tags.add(*form.cleaned_data['tags'])
-
-            ingredients = [ingr.id for ingr,
-                           count in form.cleaned_data['ingredient']]
-
-            recipe.ingredients.exclude(ingredient__in=ingredients).delete()
-
-            for ingr, count in form.cleaned_data['ingredient']:
-                RecipesIngredient.objects.update_or_create(
-                    ingredient=ingr, recipe=recipe, count=count)
-
+        if recipe:
             return redirect('recipe', recipe.id)
 
         return render(request, self.template_name, {'form': form})
@@ -187,29 +163,15 @@ class ShopListPdf(View):
     def get(self, request, *args, **kwargs):
         kwargs = {}
         if request.user.is_authenticated:
-            kwargs['recipes__recipe__purchased__user'] = self.request.user
+            kwargs['ingredients__recipe__purchased__user'] = self.request.user
         else:
-            session_key = self.request.session.session_key
-            kwargs['recipes__recipe__purchased__session_key'] = session_key
+            sess_key = self.request.session.session_key
+            kwargs['ingredients__recipe__purchased__session_key'] = sess_key
 
         ingredients = Ingredient.objects.filter(
-            **kwargs).annotate(summ=Sum('recipes__count'))
+            **kwargs).annotate(summ=Sum('ingredients__count'))
 
         buffer = create_pdf(ingredients)
 
         return FileResponse(buffer, as_attachment=True,
                             filename='shoplist.pdf')
-
-
-def page_not_found(request, exception):
-    return render(request, 'misc/404.html',
-                  {'path': request.build_absolute_uri()}, status=404)
-
-
-def server_error(request):
-    return render(request, 'misc/500.html', status=500)
-
-
-def permission_denied(request, exception):
-    return render(request, 'misc/403.html',
-                  {'path': request.build_absolute_uri()}, status=403)

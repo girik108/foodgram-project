@@ -5,5 +5,5 @@
 Запросите сброс пароля еще раз.
 {% endblock %}
 {% block button %}
-<button class="button button_style_blue" onclick="window.location.href = '{% url 'password_reset' %}';">Сброс пароля</button>
+<a href="{% url 'password_reset' %}" class="button button_style_blue">Сброс пароля</a>
 {% endblock %}

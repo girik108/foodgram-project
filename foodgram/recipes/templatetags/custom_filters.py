@@ -1,5 +1,6 @@
 from django import template
 from django.template.defaultfilters import stringfilter
+from django.urls import reverse
 
 from recipes.models import ShoppingList
 
@@ -43,7 +44,7 @@ def label_with_classes(value, arg):
 
 @register.filter
 def is_auth(url, auth='/auth/'):
-    if 'auth/password_change/' in url:
+    if reverse('password_change') in url:
         return False
     return url.startswith(auth)
 

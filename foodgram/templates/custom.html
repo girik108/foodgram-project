@@ -4,7 +4,7 @@
     <p class="custom-text-block">{% block message %}{% endblock %}</p>
     <div class="custom-button-block">
         {% block button %}
-        <button class="button button_style_blue" onclick="window.location.href = '{% url 'index' %}';">Перейти на главную</button>
+        <a href="{% url 'index' %}" class="button button_style_blue">Перейти на главную</a>
         {% endblock %}
     </div>
 </div>

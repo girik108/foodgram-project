@@ -30,8 +30,8 @@ def create_pdf(ingredients):
             p.setFont('LiberationMono', 20)
             pos = 760
         pos -= STEP
-        string = f'{num}){item.title.capitalize()} ' \
-                 f'({item.dimension}) — {item.summ}'
+        string = (f'{num}){item.title.capitalize()} '
+                  f'({item.dimension}) — {item.summ}')
         p.drawString(INDENT, pos, string)
     p.showPage()
     p.save()

@@ -1,12 +1,11 @@
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
 
-
-handler404 = 'recipes.views.page_not_found'
-handler403 = 'recipes.views.permission_denied'
-handler500 = 'recipes.views.server_error'
+handler404 = 'foodgram.views.page_not_found'
+handler403 = 'foodgram.views.permission_denied'
+handler500 = 'foodgram.views.server_error'
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -49,7 +49,7 @@ class Tag(models.Model):
 
     name = models.CharField(max_length=50, unique=True,
                             verbose_name='Наименование')
-    color = models.CharField(max_length=2, choices=COLORS,
+    color = models.CharField(max_length=10, choices=COLORS,
                              default=GREEN, verbose_name='Цвет')
     slug = models.SlugField(max_length=20, verbose_name='Метка')
 

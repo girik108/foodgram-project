@@ -50,19 +50,19 @@ class FavoriteView(views.APIView):
     def post(self, request):
         pk = request.data.get('id')
         if not (pk or pk.isdigit()):
-            return Response({'success': 'false'},
+            return Response({'success': False},
                             status=status.HTTP_400_BAD_REQUEST)
 
         instance = self.custom_create_obj(pk)
         instance.save()
 
-        return Response({'success': 'true'}, status=status.HTTP_201_CREATED)
+        return Response({'success': True}, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
         instance = self.custom_get_obj(pk)
         instance.delete()
 
-        return Response({'success': 'true'}, status=status.HTTP_200_OK)
+        return Response({'success': True}, status=status.HTTP_200_OK)
 
 
 class FollowView(FavoriteView):

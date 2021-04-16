@@ -95,10 +95,11 @@ class RecipeDetail(DetailView):
 class RecipeCreate(LoginRequiredMixin, CreateView):
     model = Recipe
     form_class = RecipeForm
+    template_name = 'recipes/recipe_form.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['new'] = True
+        context['create'] = True
         return context
 
     def post(self, request, *args, **kwargs):

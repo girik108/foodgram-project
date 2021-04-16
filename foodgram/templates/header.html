@@ -18,7 +18,7 @@
                 <li class="nav__item{% if subs %} nav__item_active{% endif %}">
                     <a href="{% url 'subscription' %}" class="nav__link link">Мои подписки</a>
                 </li>
-                <li class="nav__item{% if new %} nav__item_active{% endif %}">
+                <li class="nav__item{% if create %} nav__item_active{% endif %}">
                     <a href="{% url 'new_recipe' %}" class="nav__link link">Создать рецепт</a>
                 </li>
                 <li class="nav__item{% if favorite %} nav__item_active{% endif %}">

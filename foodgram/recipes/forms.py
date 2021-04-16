@@ -76,6 +76,11 @@ class RecipeForm(forms.ModelForm):
                 count = self.data.get('_'.join((VALUES['value'], num)))
             else:
                 count = self.data.get(VALUES['value'])
+
+            if not count.isdecimal() or int(count) < 0:
+                raise forms.ValidationError(
+                    'Количество должно быть положительным числом')
+
             data.append((ingredient, int(count)))
 
         if not data:

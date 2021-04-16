@@ -18,11 +18,23 @@ echo "Check FLUSH DB"
 if [ "$DJANGO_FLUSH_DB" ]
 then
     python3 manage.py flush --noinput
-    echo "DB if empty"
+    echo "DB is flushed"
+
+    echo "Import ingredients, dimensions, tags"
+    python3 manage.py importingredients
+
+    #Create super user if env set
+    if [ "$DJANGO_SUPERUSER_USERNAME" ]
+        then
+            python manage.py createsuperuser \
+            --noinput \
+            --username $DJANGO_SUPERUSER_USERNAME \
+            --email $DJANGO_SUPERUSER_EMAIL
+    fi
 fi
 
-python3 manage.py collectstatic --noinput
 python3 manage.py migrate
+python3 manage.py collectstatic --noinput
 
 #Load DUMP file of import
 DUMP_FILE="fixtures.json"
@@ -31,19 +43,6 @@ if test -f "$DUMP_FILE";
 then
     echo "Load data"
     python3 manage.py loaddata fixtures.json
-else
-    echo "Import ingredients"
-    #python3 manage.py importingredients
-fi
-
-#Create super user if env set
-echo "Check SUPERUSER"
-if [ "$DJANGO_SUPERUSER_USERNAME" ]
-then
-    python manage.py createsuperuser \
-        --noinput \
-        --username $DJANGO_SUPERUSER_USERNAME \
-        --email $DJANGO_SUPERUSER_EMAIL
 fi
 
 #RUN Gunicorn

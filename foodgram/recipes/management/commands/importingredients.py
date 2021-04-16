@@ -38,7 +38,7 @@ def import_all():
 
 def create_tags():
     Tag.objects.all().delete()
-    
+
     items = [('breakfast', 'orange', 'Завтрак'),
              ('lunch', 'green', 'Обед'),
              ('snack', 'orange', 'Перекус'),

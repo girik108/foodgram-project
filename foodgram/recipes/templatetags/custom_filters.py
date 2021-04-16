@@ -41,9 +41,6 @@ def tag_active(request, slug, active_class='tags__checkbox_active'):
         return active_class
 
 
-
-
-
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)

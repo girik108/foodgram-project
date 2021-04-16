@@ -32,6 +32,18 @@ def tag_with_classes(value, arg):
     return value.tag
 
 
+@register.filter(is_safe=True)
+def tag_active(request, slug, active_class='tags__checkbox_active'):
+    value = request.GET.get('tag')
+    if not value or value != slug:
+        return ''
+    else:
+        return active_class
+
+
+
+
+
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)

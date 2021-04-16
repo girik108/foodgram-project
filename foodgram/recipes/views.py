@@ -96,6 +96,11 @@ class RecipeCreate(LoginRequiredMixin, CreateView):
     model = Recipe
     form_class = RecipeForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['new'] = True
+        return context
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, files=request.FILES)
         recipe = form.custom_save(author=request.user)

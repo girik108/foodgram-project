@@ -33,7 +33,7 @@ then
     python3 manage.py loaddata fixtures.json
 else
     echo "Import ingredients"
-    python3 manage.py importingredients
+    #python3 manage.py importingredients
 fi
 
 #Create super user if env set

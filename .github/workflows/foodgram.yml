@@ -80,7 +80,6 @@ jobs:
             echo -e "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .web.env
             echo -e "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .web.env
             echo -e "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .web.env
-            echo -e "DJANGO_FLUSH_DB=${{ secrets.DJANGO_FLUSH_DB }}" >> .web.env
             echo -e "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .web.env
             echo -e "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .web.env
             echo -e "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .web.env
